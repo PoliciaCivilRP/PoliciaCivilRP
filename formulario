@@ -369,9 +369,6 @@ href="https://discord.com/oauth2/authorize?client_id=1482774609685119187&respons
 
 </div>
 
-</div>
-
-
 <div id="app">
 
 
@@ -620,9 +617,6 @@ onclick="enviarFormulario()">
 
 </div>
 
-
-
-</div>
 
 <script>
 
