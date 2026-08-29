@@ -64,7 +64,7 @@
             align-items: center;
             border-bottom: 2px solid rgba(255,255,255,0.05);
         }
-        .logo-area { display: flex; align-items: center; gap: 12px; font-weight: bold; font-size: 18px; letter-spacing: 1px; }
+        .logo-area { display: flex; align-items: center; gap: 12px; font-weight: bold; font-size: 18px; letter-spacing: 1px; cursor: pointer; }
         .logo-area img { width: 35px; height: 35px; object-fit: contain; }
         .nav-links { display: flex; gap: 20px; font-size: 13px; font-weight: 600; align-items: center; }
         .nav-links a { color: #94a3b8; text-decoration: none; cursor: pointer; transition: 0.2s; }
@@ -133,6 +133,42 @@
         .sidebar-right h3 { font-size: 14px; color: #f59e0b; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-top: 0; }
         .agent-info-row { font-size: 13px; margin: 12px 0; color: #cbd5e1; line-height: 1.5; }
 
+        /* SEÇÃO INSTITUCIONAL */
+        .view-institucional {
+            display: none;
+            max-width: 1000px;
+            margin: 30px auto;
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .sub-nav-inst {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 15px;
+        }
+        .btn-tab {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        .btn-tab.active { background: var(--accent-color); }
+        .inst-content { display: none; font-size: 14px; line-height: 1.6; color: #cbd5e1; max-height: 600px; overflow-y: auto; padding-right: 10px; }
+        .inst-content.active { display: block; }
+        .inst-content h3 { color: #60a5fa; margin-top: 20px; font-size: 18px; }
+        .inst-content h4 { color: #f59e0b; margin-top: 15px; font-size: 15px; }
+        .inst-content p { margin-bottom: 12px; }
+        .inst-content ul { margin-left: 20px; margin-bottom: 12px; }
+        .inst-content li { margin-bottom: 6px; }
+
         /* SEÇÃO DE FORMULÁRIOS (OCULTAS POR PADRÃO) */
         .view-form {
             display: none;
@@ -186,13 +222,13 @@
 
 <div id="main-app">
     <header>
-        <div class="logo-area">
+        <div class="logo-area" onclick="mostrarHome()">
             <img src="https://i.imgur.com/SUA_LOGO_AQUI.png" alt="Logo">
             <span>POLÍCIA CIVIL — SAN ANDREAS</span>
         </div>
         <div class="nav-links">
-            <a onclick="mostrarHome()" class="active">INÍCIO</a>
-            <a onclick="mostrarHome()">INSTITUCIONAL</a>
+            <a onclick="mostrarHome()" class="active" id="nav-home">INÍCIO</a>
+            <a onclick="abrirInstitucional()" id="nav-inst">INSTITUCIONAL</a>
             <a onclick="mostrarHome()">LEGISLAÇÃO</a>
             <a onclick="abrirFormularioBO()">FORMULÁRIO / B.O.</a>
             <a onclick="abrirFormularioSet()">PEDIR SET</a>
@@ -211,9 +247,9 @@
             </div>
 
             <div class="cards-grid">
-                <div class="card-item" onclick="alert('Área institucional em breve.')">
-                    <h3>📋 Inscrições</h3>
-                    <p>Inscrições abertas para novos recrutamentos e testes operacionais.</p>
+                <div class="card-item" onclick="abrirInstitucional()">
+                    <h3>📋 Institucional (Sobre & Cursos)</h3>
+                    <p>Consulte diretrizes, cargos, atribuições e sub-divisões da corporação.</p>
                 </div>
                 <div class="card-item" onclick="abrirFormularioBO()">
                     <h3>⚖️ Registro de Ocorrência & B.O.</h3>
@@ -242,6 +278,94 @@
             <div class="agent-info-row" style="font-size: 12px; opacity: 0.85;">
                 Todos os formulários que você enviar neste site, você será reconhecido automaticamente pelo nosso sistema integrado com o Discord.
             </div>
+        </div>
+    </div>
+
+    <div id="view-institucional" class="view-institucional">
+        <button class="btn-voltar" onclick="mostrarHome()">← Voltar ao Início</button>
+        <div class="sub-nav-inst">
+            <button class="btn-tab active" id="btn-tab-sobre" onclick="mudarAbaInst('sobre')">Sobre a Polícia Civil</button>
+            <button class="btn-tab" id="btn-tab-cursos" onclick="mudarAbaInst('cursos')">Sub-divisões e Cursos</button>
+        </div>
+
+        <div id="inst-sobre" class="inst-content active">
+            <h2>Sobre a Polícia Civil</h2>
+            <p>A Polícia Civil pode ser dividida em duas funções: investigativa e tática. A primeira tem a responsabilidade de investigar crimes, reunir evidências e apresentar casos ao sistema judicial, enquanto a segunda auxilia em investigações de alto risco e atua em grandes operações.</p>
+            <p><strong>Jurisdição:</strong> Toda a Cidade.</p>
+
+            <h3>CARGOS E FUNÇÕES</h3>
+            <p>A Polícia Civil tem como objetivo primário investigar, aprimorar, corrigir e se necessário, aplicar sanções a quaisquer abusos administrativos ou penais cometidos por agentes de policia ou não, com o propósito de assegurar a integridade, transparência e ética no desempenho das funções policiais. Compromete-se a garantir a conformidade estrita com os regulamentos, normas e padrões éticos, promovendo a confiança da comunidade e a excelência no serviço policial por meio de investigações imparciais e da aplicação justa e proporcional das medidas corretivas.</p>
+            <p>As atribuições da Polícia Civil não se limitam aos tópicos apresentados neste documento. Os tópicos aqui apresentados têm como objetivo apenas estabelecer as prioridades de atuação da unidade na cidade.</p>
+            <ul>
+                <li>Por se tratar de uma força policial que possui poderes investigativos e jurídicos, fica de responsabilidade <strong>EXCLUSIVA</strong> do Alto-comando da polícia civil o treinamento e a capacitação de seus subordinados;</li>
+                <li>É necessário seguir a legislação e aplicar as punições de forma imparcial, independentemente da relação com o envolvido ou da função que exerce;</li>
+                <li>O ingresso na unidade deve ocorrer prioritariamente mediante o cumprimento dos requisitos, mesmo em casos de indicação;</li>
+                <li>Após ingressar, o agente deverá realizar as atribuições sempre que solicitado, e a inatividade ou problemas em resolver os inquéritos serão motivos para desligamento;</li>
+                <li><strong>Ressalva:</strong> As Prisões são Prioridade (mas não exclusividade) da polícia civil, enquanto as ações fechadas pequenas, médias e grandes são Prioridade (mas não exclusividade) da Polícia Militar. Sendo assim um PM pode realizar prisão quando um PC permitir ou não houver PC disponível, tal como um PC pode participar de uma ação quando um PM permitir ou não houver um PM disponível. Assim, nenhuma das corporações é obrigada a assumir exclusivamente suas respectivas prioridades. As prioridades servem para estabelecer a preferência de atuação de cada instituição no exercício de suas respectivas funções, sem impedir a atuação da outra quando necessário.</li>
+            </ul>
+
+            <h3>1. CARGOS E ATRIBUIÇÕES</h3>
+            <p><strong>Delegado Geral e Sub Delegado — [DG-PC]</strong><br>Responsáveis pela administração geral da Polícia Civil; Definem diretrizes, normas internas e estratégias institucionais; Nomeiam chefias e distribuem funções administrativas; Possuem autoridade para atuar em qualquer setor da corporação quando necessário.</p>
+            
+            <p><strong>Delegado Geral Adjunto — [DG-G-ADJ]</strong><br>Auxilia diretamente o Delegado-Geral; Coordena operações de grande porte; Supervisiona todas as divisões da Polícia Civil; Responsável pela comunicação institucional com o Poder Judiciário e Ministério Público; Autoriza abertura de inquéritos e solicitações judiciais; Pode exercer todas as funções dos cargos subordinados quando necessário.</p>
+            
+            <p><strong>Delegado Adjunto — [DG-ADJ]</strong><br>Coordena investigações e equipes operacionais; Preside inquéritos policiais; Solicita mandados judiciais, perícias e diligências; Fiscaliza o andamento das investigações; Pode assumir qualquer função operacional em situações excepcionais.</p>
+            
+            <p><strong>Investigador Chefe — [INV-C-PC]</strong><br>Lidera equipes de investigação; Planeja e coordena operações policiais; Distribui diligências entre investigadores; Supervisiona agentes, peritos e escrivães durante investigações; Ministra cursos investigativos, jurídicos e táticos; Responsável pelo treinamento operacional dos agentes.</p>
+            
+            <p><strong>Investigador — [INV-PC]</strong><br>Executa diligências e investigações; Cumpre mandados judiciais; Realiza vigilâncias, campanas e prisões; Efetua interrogatórios e coleta de informações; Atua na proteção de autoridades e testemunhas quando designado; Auxilia os peritos na preservação do local de crime.</p>
+            
+            <p><strong>Perito Criminal Chefe — [PER-C-PC]</strong><br>Coordena o setor de perícia criminal; Distribui exames periciais; Supervisiona os peritos criminais; Elabora laudos técnicos complexos; Ministra cursos de criminalística e preservação de local de crime.</p>
+            
+            <p><strong>Perito Criminal — [PER-PC]</strong><br>Realiza perícias em locais de crime; Coleta e analisa vestígios; Produz laudos periciais; Auxilia investigações por meio de provas técnicas; Atua em conjunto com investigadores durante operações quando necessário.</p>
+            
+            <p><strong>Escrivão Chefe — [ESC-C-PC]</strong><br>Coordena o setor cartorário; Supervisiona escrivães; Controla inquéritos e documentos oficiais; Garante o correto andamento processual; Pode aplicar orientações e advertências administrativas.</p>
+            
+            <p><strong>Escrivão — [ESC-PC]</strong><br>Lavra boletins de ocorrência; Redige termos, autos e inquéritos; Organiza provas e documentos; Expede ofícios e intimações; Auxilia delegados durante interrogatórios e oitivas.</p>
+            
+            <p><strong>Agente Classe III — [AGT-III-PC]</strong><br>Atua em patrulhamento ostensivo e investigativo; Auxilia investigadores em diligências; Cumpre mandados acompanhados por um Investigador; Realiza escoltas e apoio operacional; Pode supervisionar Agentes Classe II e Classe I.</p>
+            
+            <p><strong>Agente Classe II — [AGT-II-PC]</strong><br>Atua em período probatório; Executa atividades operacionais sem estar supervisionado; Participa de operações, treinamentos e diligências.</p>
+            
+            <p><strong>Agente Classe I — [AGT-I-PC]</strong><br>Encontra-se em estágio operacional inicial; Atua exclusivamente acompanhado por agente superior; Participa de treinamentos práticos; Está em processo de adaptação às rotinas da Polícia Civil.</p>
+            
+            <p><strong>Academia de Polícia — [ACADEPOL]</strong><br>Fase inicial de formação; O aluno ainda não integra o efetivo operacional da Polícia Civil; Recebe instruções jurídicas, investigativas, operacionais e disciplinares; Participa de treinamentos físicos, técnicos e simulados; Somente após aprovação no curso de formação poderá ingressar como Agente Classe I.</p>
+            
+            <p><em>Disposição Geral: Os cargos superiores podem exercer todas as funções dos cargos inferiores, quando necessário ao interesse do serviço.</em></p>
+
+            <h3>2. CONDUÇÃO DE INVESTIGAÇÕES</h3>
+            <p>As investigações são iniciadas com base em denúncias, que podem ocorrer de duas formas: denúncias por oficiais e denúncias por cidadãos, ambas sendo válidas somente se houver prévio registro de boletim de ocorrência ou pedidos de inquérito com indícios. Posteriormente, serão convocados para depor perante um delegado e um advogado se solicitado pelo depoente, devendo apresentar provas físicas, como áudio, vídeo ou fotografias. O Boletim de Ocorrência deverá ser salvo e anexado ao processo.</p>
+
+            <h3>3. AVALIAÇÃO DE DENÚNCIAS</h3>
+            <p>Inicialmente, é realizada uma análise para determinar se a denúncia deve ser tratada pelas altas patentes militares, corregedoria ou encaminhada para o Judiciário. A equipe avalia detalhadamente os elementos apresentados para assegurar a validade da denúncia e iniciar uma investigação. Se a denúncia for considerada válida, um Policial responsável é designado para conduzir a investigação, sendo responsável por reunir informações, interrogar os envolvidos e coletar evidências. Em outros casos um inquérito é solicitado por um agente que presenciou ou possui indícios de atos ilícitos, nesse caso o próprio inquérito serve de B.O. pois é uma prova legal e geralmente possui as provas para ter iniciado.</p>
+
+            <h3>4. PREVISÕES LEGAIS</h3>
+            <p>Art. 3º, § 2º e Art. 7º das Disposições Preliminares</p>
+        </div>
+
+        <div id="inst-cursos" class="inst-content">
+            <h2>Sub-divisões e Cursos</h2>
+            <p>A Polícia Civil pode ser dividida em duas funções: investigativa e tática. A primeira tem a responsabilidade de investigar crimes, reunir evidências e apresentar casos ao sistema judicial, enquanto a segunda auxilia em investigações de alto risco e atua em grandes operações.</p>
+
+            <h3>PUMA - Patrulha Unificada Metropolitana de Apoio (CURSO)</h3>
+            <p>Atua como uma força de apoio ostensivo para reforçar o policiamento militar em situações de baixo contingente ou desvantagem numérica, atuando diretamente em patrulhamentos. É o primeiro curso ou unidade de um agente policial.</p>
+            <p>O aluno ingressa na Polícia Civil inicialmente no cargo de Acadepol, sem nenhuma especialidade. Nessa fase, ele possui restrições operacionais severas: não pode portar armamento pesado, patrulhar sem acompanhamento, entre outras limitações. Para avançar, é necessário concluir o curso de PUMA, que capacita o agente nos níveis intermediário e avançado de patrulhamento e nas normativas da cidade. A partir dessa aprovação, o policial é liberado para o patrulhamento ostensivo com fuzis, execução de prisões e demais atribuições — sendo essa a única restrição de armamento existente na instituição. O curso pode ser aplicado no mesmo dia do ingresso ou posteriormente, estruturado por meio de um formulário avaliativo. Essa dinâmica obriga o candidato a pesquisar ativamente as regras da cidade para responder às questões, garantindo que ele estude o regulamento e adquira o conhecimento mínimo necessário, mesmo recorrendo à consulta durante o processo.</p>
+            <p>O responsável fica encarregado de passar este curso para os novos agentes.</p>
+
+            <h3>GOE - Grupo de Operações Especiais</h3>
+            <p>Funciona como um estágio probatório operacional ou uma tropa de seleção e triagem, testando os limites psicológicos e a conduta sob pressão dos candidatos antes de permitirem o acesso ao CORE.</p>
+            <p>A GOE não é uma unidade tática. Não possui tempo mínimo ou limite para a aprovação, dependendo unicamente da confiança da tropa, atividade e desempenho.</p>
+
+            <h3>CORE - Coordenadoria de Recursos Especiais</h3>
+            <p>Representa o braço de operações táticas especiais e de alta complexidade da Polícia Civil, focada em entradas críticas, intervenções ofensivas e cruzamento de informações entre as unidades das polícias.</p>
+            <h4 style="color: #ef4444;">⚠️ IMPORTANTE !!!</h4>
+            <p><strong>A CORE NÃO TEM PRIORIDADE NAS AÇÕES FECHADAS DA CIDADE, ESSA PRIORIDADE PERTENCE À UNIDADE TÁTICA DA POLÍCIA MILITAR.</strong> A diretoria da Polícia Civil não autoriza discussões e desentendimentos relacionados a este tema, pois está bem explícito.</p>
+            <p>Só podem fazer parte da CORE aqueles que passam pela GOE.</p>
+
+            <h3>DIP - Departamento Investigativo Policial</h3>
+            <p>Concentra-se na atividade-fim de inteligência, recolhimento de provas e elucidação de crimes (investigativa). Devido ao seu alto nível de complexidade, exige tempo mínimo na corporação para ingresso.</p>
+
+            <p><em>Disposição Geral: As Sub-Divisões representam especialidades e não substituem a Hierarquia de Cargos ou Funções.</em></p>
         </div>
     </div>
 
@@ -386,13 +510,44 @@
 
     function esconderTudo() {
         document.getElementById('view-home').style.display = 'none';
+        document.getElementById('view-institucional').style.display = 'none';
         document.getElementById('view-bo').style.display = 'none';
         document.getElementById('view-set').style.display = 'none';
+        
+        // Remove active de todos do menu
+        document.getElementById('nav-home').classList.remove('active');
+        document.getElementById('nav-inst').classList.remove('active');
     }
 
     function mostrarHome() {
         esconderTudo();
         document.getElementById('view-home').style.display = 'grid';
+        document.getElementById('nav-home').classList.add('active');
+    }
+
+    function abrirInstitucional() {
+        esconderTudo();
+        document.getElementById('view-institucional').style.display = 'block';
+        document.getElementById('nav-inst').classList.add('active');
+    }
+
+    function mudarAbaInst(aba) {
+        const sobre = document.getElementById('inst-sobre');
+        const cursos = document.getElementById('inst-cursos');
+        const btnSobre = document.getElementById('btn-tab-sobre');
+        const btnCursos = document.getElementById('btn-tab-cursos');
+
+        if (aba === 'sobre') {
+            sobre.classList.add('active');
+            cursos.classList.remove('active');
+            btnSobre.classList.add('active');
+            btnCursos.classList.remove('active');
+        } else {
+            cursos.classList.add('active');
+            sobre.classList.remove('active');
+            btnCursos.classList.add('active');
+            btnSobre.classList.remove('active');
+        }
     }
 
     function abrirFormularioBO() {
