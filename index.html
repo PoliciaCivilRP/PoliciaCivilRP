@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Polícia Civil - ONE</title>
+    <title>Polícia Civil - Estado de San Andreas</title>
     <style>
         :root {
             --bg-dark: #0f172a;
@@ -131,8 +131,7 @@
             height: fit-content;
         }
         .sidebar-right h3 { font-size: 14px; color: #f59e0b; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-top: 0; }
-        .agent-info-row { font-size: 13px; margin: 12px 0; color: #cbd5e1; }
-        .agent-info-row strong { color: white; }
+        .agent-info-row { font-size: 13px; margin: 12px 0; color: #cbd5e1; line-height: 1.5; }
 
         /* SEÇÃO DE FORMULÁRIOS (OCULTAS POR PADRÃO) */
         .view-form {
@@ -155,6 +154,21 @@
         .painel-direito-calc { width: 40%; display: flex; flex-direction: column; padding: 30px; gap: 15px; background: #111827; }
         .btn-voltar { background: #374151; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; margin-bottom: 15px; width: fit-content; }
         .btn-voltar:hover { background: #4b5563; }
+        
+        /* ESTILO PARA AS DICAS */
+        .dicas-box {
+            background: #1f2937;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 11px;
+            color: #9ca3af;
+            line-height: 1.4;
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid #374151;
+        }
+        .dicas-box ul { margin: 5px 0 0 15px; padding: 0; }
+        .dicas-box li { margin-bottom: 4px; }
     </style>
 </head>
 <body onload="checkLogin()">
@@ -182,7 +196,7 @@
             <a onclick="mostrarHome()">LEGISLAÇÃO</a>
             <a onclick="abrirFormularioBO()">FORMULÁRIO / B.O.</a>
             <a onclick="abrirFormularioSet()">PEDIR SET</a>
-            <a href="https://discord.gg/GcKmRGhWX" target="_blank" style="color: #60a5fa;">DISCORD</a>
+            <a href="https://discord.gg/SEU_DISCORD_AQUI" target="_blank" style="color: #60a5fa;">DISCORD</a>
             <a onclick="logout()" style="color: #ff4757;">SAIR</a>
         </div>
     </header>
@@ -209,7 +223,7 @@
                     <h3>👤 Pedir Set / Solicitação</h3>
                     <p>Solicitações de cargos, promoções e alterações de patentes.</p>
                 </div>
-                <div class="card-item" onclick="window.open('https://discord.gg/GcKmRGhWX', '_blank')">
+                <div class="card-item" onclick="window.open('https://discord.gg/SEU_DISCORD_AQUI', '_blank')">
                     <h3>🎧 Ouvidoria & Suporte</h3>
                     <p>Canal aberto para denúncias internas e ouvidoria civil.</p>
                 </div>
@@ -225,7 +239,9 @@
                     <strong id="user-name" style="font-size: 14px;">...</strong>
                 </div>
             </div>
-            <div class="agent-info-row">Patente: <strong id="user-patente" style="color: #f59e0b;">Nenhum</strong></div>
+            <div class="agent-info-row" style="font-size: 12px; opacity: 0.85;">
+                Todos os formulários que você enviar neste site, você será reconhecido automaticamente pelo nosso sistema integrado com o Discord.
+            </div>
         </div>
     </div>
 
@@ -243,26 +259,31 @@
                 
                 <div class="info-linha">
                     👮‍♂️ Oficial Responsável*: <input type="text" id="inPrisaoPor" class="input-campo"> 
-                    🆔 ID*: <input type="text" id="idPolicial" class="input-campo" style="max-width: 60px;">
+                    🆔 Passaporte*: <input type="text" id="idPolicial" class="input-campo" style="max-width: 60px;">
                 </div>
 
                 <div class="info-linha">
-                    🏢 Divisão: 
+                    🏢 Divisão*: 
                     <select id="inUnidade" class="select-campo">
-                        <option value="D.H.P.P">D.H.P.P</option>
-                        <option value="Investigação">Investigação</option>
-                        <option value="Operações Especiais">Operações Especiais</option>
-                        <option value="Plantão">Plantão</option>
+                        <option value="Polícia Civil">Polícia Civil</option>
+                        <option value="GARRA">GARRA</option>
+                        <option value="GOE">GOE</option>
+                        <option value="DEIC">DEIC</option>
                     </select>
                 </div>
 
                 <div class="info-linha">
-                    ⚖️ Advogado Presente: <input type="text" id="inAdvogado" class="input-campo" placeholder="Nome (Opcional)"> 
-                    🆔 ID: <input type="text" id="idAdvogado" class="input-campo" style="max-width: 80px;">
+                    📢 Denunciante*: <input type="text" id="inDenunciante" class="input-campo"> 
+                    🆔 Passaporte*: <input type="text" id="idDenunciante" class="input-campo" style="max-width: 80px;">
+                </div>
+
+                <div class="info-linha">
+                    ⚖️ Advogado (Opcional): <input type="text" id="inAdvogado" class="input-campo" placeholder="Nome"> 
+                    🆔 Passaporte: <input type="text" id="idAdvogado" class="input-campo" style="max-width: 80px;" placeholder="Opcional">
                 </div>
                 
                 <div style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px;">
-                    <div class="info-linha">👤 Cidadão / Suspeito*: <input type="text" id="inNome" class="input-campo"> 🆔 ID*: <input type="text" id="inPass" class="input-campo" style="max-width: 80px;"></div>
+                    <div class="info-linha">👤 Cidadão / Suspeito (Opcional): <input type="text" id="inNome" class="input-campo" placeholder="Nome"> 🆔 Passaporte: <input type="text" id="inPass" class="input-campo" style="max-width: 80px;" placeholder="Opcional"></div>
                     
                     <label style="font-size: 13px; font-weight: bold; margin-top: 10px; display: block;">📝 Relatório / Descrição dos Fatos:</label>
                     <textarea id="inRelatorio" class="textarea-relatorio" rows="6" placeholder="Descreva detalhadamente a ocorrência..."></textarea>
@@ -271,11 +292,28 @@
 
             <div class="painel-direito-calc">
                 <img src="https://i.imgur.com/SEU_BANNER_AQUI.png" style="width: 100%; height: 120px; border-radius: 8px; object-fit: cover; border: 1px solid #374151;" alt="Banner">
-                <div style="background: #1f2937; padding: 15px; border-radius: 8px; font-size: 12px; color: #9ca3af; line-height: 1.4;">
+                <div style="background: #1f2937; padding: 12px; border-radius: 8px; font-size: 12px; color: #9ca3af; line-height: 1.4;">
                     Preencha os campos e envie o registro de ocorrência oficial para o canal correspondente no Discord.
                 </div>
-                <button style="background: #27ae60; color: white; border: none; border-radius: 8px; height: 50px; font-weight: bold; cursor: pointer; margin-top: auto;" onclick="enviarWebhookBO()">Enviar Ocorrência</button>
-                <button style="background: #374151; color: white; border: none; border-radius: 8px; height: 40px; font-weight: bold; cursor: pointer;" onclick="mostrarHome()">Cancelar</button>
+                
+                <div class="dicas-box">
+                    <strong>💡 Dicas para o Relatório:</strong>
+                    <ul>
+                        <li>1. Descreva a dinâmica exata dos fatos.</li>
+                        <li>2. Informe se houve apreensão de itens/armas.</li>
+                        <li>3. Cite artigos ou leis infringidas, se souber.</li>
+                        <li>4. Mencione se o suspeito colaborou ou resistiu.</li>
+                        <li>5. Inclua o nome de testemunhas presentes.</li>
+                        <li>6. Detalhe os locais e endereços da ação.</li>
+                        <li>7. Seja claro, objetivo e profissional.</li>
+                        <li>8. Evite abreviações informais excessivas.</li>
+                        <li>9. Confira os passaportes antes de enviar.</li>
+                        <li>10. Em caso de dúvidas, consulte o comando.</li>
+                    </ul>
+                </div>
+
+                <button style="background: #27ae60; color: white; border: none; border-radius: 8px; height: 45px; font-weight: bold; cursor: pointer; margin-top: auto;" onclick="enviarWebhookBO()">Enviar Ocorrência</button>
+                <button style="background: #374151; color: white; border: none; border-radius: 8px; height: 35px; font-weight: bold; cursor: pointer;" onclick="mostrarHome()">Cancelar</button>
             </div>
         </div>
     </div>
@@ -291,20 +329,21 @@
                 <div class="linha-divisora"></div>
 
                 <div class="info-linha">👤 Nome do Policial*: <input type="text" id="setTitleNome" class="input-campo"></div>
-                <div class="info-linha">🆔 Passaporte / ID*: <input type="text" id="setTitlePass" class="input-campo"></div>
+                <div class="info-linha">🆔 Passaporte*: <input type="text" id="setTitlePass" class="input-campo"></div>
                 <div class="info-linha">🤝 Recrutador / Superior*: <input type="text" id="setTitleRecrutador" class="input-campo"></div>
-                <div class="info-linha">📅 Data de Recrutamento*: <input type="date" id="setTitleData" class="input-campo"></div>
+                
+                <div class="info-linha">📅 Data e Hora de Recrutamento*: <input type="datetime-local" id="setTitleDataHora" class="input-campo"></div>
                 
                 <div class="info-linha">
                     ⭐ Patente Requisitada*: 
-                    <select id="setTitlePatente" class="select-campo">
-                        <option value="Recruta">ACADEPOL</option>
-                        <option value="Investigador">Investigador</option>
-                        <option value="Investigador Chefe">Investigador Chefe</option>
-                        <option value="Inspetor">Inspetor</option>
-                        <option value="Comissário">Comissário</option>
-                        <option value="Delegado">Delegado</option>
+                    <select id="setTitlePatente" class="select-campo" onchange="verificarOutraPatente()">
+                        <option value="CADEPOL">CADEPOL</option>
+                        <option value="Outras">Outras</option>
                     </select>
+                </div>
+
+                <div class="info-linha" id="campo-outra-patente" style="display: none;">
+                    ✍️ Especifique a Patente*: <input type="text" id="setTitleOutra" class="input-campo" placeholder="Digite a patente desejada">
                 </div>
             </div>
 
@@ -323,7 +362,7 @@
 <script>
     // ⚠️ CONFIGURAÇÃO DOS WEBHOOKS DO DISCORD (COLOQUE SEUS LINKS AQUI)
     const WEBHOOK_BO = "URL_DO_WEBHOOK_DE_BO_AQUI"; 
-    const WEBHOOK_SET = "https://discord.com/api/webhooks/1543373625938280520/ImOpr8m83rIFVfmXp_j_J43yTWJL00vxkuh3MtwSQf3kVUYm4MjZjfpBIMZ7dbnyyvdj";
+    const WEBHOOK_SET = "URL_DO_WEBHOOK_DE_PEDIR_SET_AQUI";
 
     function checkLogin() {
         const fragment = new URLSearchParams(window.location.hash.slice(1));
@@ -336,10 +375,6 @@
                 document.getElementById('main-app').style.display = 'block';
                 document.getElementById('user-name').innerText = user.username;
                 document.getElementById('user-avatar').src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
-                
-                // Exemplo para leitura futura de patente / cargos do Discord se desejar integrar:
-                // Por padrão começa como Nenhum conforme solicitado
-                document.getElementById('user-patente').innerText = "Nenhum";
                 
                 window.discordUser = user; 
                 atualizarDataHora();
@@ -370,6 +405,17 @@
         document.getElementById('view-set').style.display = 'block';
     }
 
+    function verificarOutraPatente() {
+        const select = document.getElementById('setTitlePatente').value;
+        const campoOutra = document.getElementById('campo-outra-patente');
+        if (select === 'Outras') {
+            campoOutra.style.display = 'flex';
+        } else {
+            campoOutra.style.display = 'none';
+            document.getElementById('setTitleOutra').value = '';
+        }
+    }
+
     function atualizarDataHora() {
         const agora = new Date();
         document.getElementById('inData').value = agora.toLocaleDateString('pt-BR');
@@ -383,13 +429,15 @@
         const policial = document.getElementById('inPrisaoPor').value;
         const idPolicial = document.getElementById('idPolicial').value;
         const unidade = document.getElementById('inUnidade').value;
+        const denunciante = document.getElementById('inDenunciante').value;
+        const idDenunciante = document.getElementById('idDenunciante').value;
         const advogado = document.getElementById('inAdvogado').value || "Nenhum";
         const idAdvogado = document.getElementById('idAdvogado').value || "-";
-        const cidadao = document.getElementById('inNome').value;
-        const idCidadao = document.getElementById('inPass').value;
+        const cidadao = document.getElementById('inNome').value || "Não informado";
+        const idCidadao = document.getElementById('inPass').value || "-";
         const relatorio = document.getElementById('inRelatorio').value;
 
-        if (!policial || !idPolicial || !cidadao || !idCidadao || !relatorio) {
+        if (!policial || !idPolicial || !denunciante || !idDenunciante || !relatorio) {
             alert("Por favor, preencha todos os campos obrigatórios (*)");
             return;
         }
@@ -401,9 +449,10 @@
                 fields: [
                     { name: "📅 Data / Hora", value: `${data} às ${hora}`, inline: true },
                     { name: "🏢 Divisão", value: unidade, inline: true },
-                    { name: "👮‍♂️ Agente Responsável", value: `${policial} (ID: ${idPolicial})`, inline: false },
-                    { name: "👤 Cidadão / Suspeito", value: `${cidadao} (ID: ${idCidadao})`, inline: true },
-                    { name: "⚖️ Advogado", value: `${advogado} (ID: ${idAdvogado})`, inline: true },
+                    { name: "👮‍♂️ Agente Responsável", value: `${policial} (Passaporte: ${idPolicial})`, inline: false },
+                    { name: "📢 Denunciante", value: `${denunciante} (Passaporte: ${idDenunciante})`, inline: false },
+                    { name: "⚖️ Advogado", value: `${advogado} (Passaporte: ${idAdvogado})`, inline: true },
+                    { name: "👤 Cidadão / Suspeito", value: `${cidadao} (Passaporte: ${idCidadao})`, inline: true },
                     { name: "📝 Relatório dos Fatos", value: relatorio, inline: false }
                 ],
                 footer: {
@@ -435,10 +484,14 @@
         const nome = document.getElementById('setTitleNome').value;
         const pass = document.getElementById('setTitlePass').value;
         const recrutador = document.getElementById('setTitleRecrutador').value;
-        const dataRecrutamento = document.getElementById('setTitleData').value;
-        const patente = document.getElementById('setTitlePatente').value;
+        const dataHoraRecrutamento = document.getElementById('setTitleDataHora').value;
+        
+        let patente = document.getElementById('setTitlePatente').value;
+        if (patente === 'Outras') {
+            patente = document.getElementById('setTitleOutra').value;
+        }
 
-        if (!nome || !pass || !recrutador || !dataRecrutamento || !patente) {
+        if (!nome || !pass || !recrutador || !dataHoraRecrutamento || !patente) {
             alert("Por favor, preencha todos os campos obrigatórios (*)");
             return;
         }
@@ -449,9 +502,9 @@
                 color: 16761035,
                 fields: [
                     { name: "👤 Nome do Policial", value: nome, inline: true },
-                    { name: "🆔 Passaporte / ID", value: pass, inline: true },
+                    { name: "🆔 Passaporte", value: pass, inline: true },
                     { name: "🤝 Recrutador / Superior", value: recrutador, inline: true },
-                    { name: "📅 Data de Recrutamento", value: dataRecrutamento, inline: true },
+                    { name: "📅 Data e Hora de Recrutamento", value: dataHoraRecrutamento.replace('T', ' às '), inline: true },
                     { name: "⭐ Patente Requisitada", value: patente, inline: false }
                 ],
                 footer: {
