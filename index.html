@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Polícia Civil One</title>
+    <title>Polícia Civil - Estado de San Andreas</title>
     <style>
         :root {
             --bg-dark: #0f172a;
@@ -66,7 +66,7 @@
         }
         .logo-area { display: flex; align-items: center; gap: 12px; font-weight: bold; font-size: 18px; letter-spacing: 1px; }
         .logo-area img { width: 35px; height: 35px; object-fit: contain; }
-        .nav-links { display: flex; gap: 30px; font-size: 14px; font-weight: 600; }
+        .nav-links { display: flex; gap: 20px; font-size: 13px; font-weight: 600; align-items: center; }
         .nav-links a { color: #94a3b8; text-decoration: none; cursor: pointer; transition: 0.2s; }
         .nav-links a:hover, .nav-links a.active { color: white; }
 
@@ -82,7 +82,7 @@
 
         /* HERO / BANNER */
         .hero-section {
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://i.imgur.com/kBDS7BX.png') center/cover;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://i.imgur.com/SEU_BANNER_AQUI.png') center/cover;
             border-radius: 15px;
             padding: 40px;
             border: 1px solid rgba(255,255,255,0.1);
@@ -122,7 +122,7 @@
         .card-item h3 { margin: 0 0 8px 0; font-size: 16px; display: flex; align-items: center; gap: 8px; color: #f8fafc; }
         .card-item p { margin: 0; font-size: 12px; color: #94a3b8; line-height: 1.4; }
 
-        /* PAINEL DIREITO (ÁREA DO POLICIAL) */
+        /* PAINEL DIREITO (PERFIL DO POLICIAL) */
         .sidebar-right {
             background: var(--bg-card);
             border-radius: 15px;
@@ -131,16 +131,11 @@
             height: fit-content;
         }
         .sidebar-right h3 { font-size: 14px; color: #f59e0b; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-top: 0; }
-        .agent-info-row { font-size: 13px; margin: 10px 0; color: #cbd5e1; }
+        .agent-info-row { font-size: 13px; margin: 12px 0; color: #cbd5e1; }
         .agent-info-row strong { color: white; }
-        
-        .quick-links { margin-top: 20px; }
-        .quick-links h4 { font-size: 12px; color: #94a3b8; text-transform: uppercase; margin-bottom: 10px; }
-        .quick-link-item { font-size: 13px; color: #60a5fa; margin: 6px 0; cursor: pointer; display: block; text-decoration: none; }
-        .quick-link-item:hover { text-decoration: underline; }
 
-        /* SEÇÃO DA CALCULADORA / FORMULÁRIO (INICIALMENTE OCULTA) */
-        #view-calculadora {
+        /* SEÇÃO DE FORMULÁRIOS (OCULTAS POR PADRÃO) */
+        .view-form {
             display: none;
             max-width: 1000px;
             margin: 30px auto;
@@ -149,12 +144,12 @@
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .ficha-branca { background-color: white; color: black; width: 60%; padding: 30px; min-height: 850px; overflow-y: auto; }
-        .ficha-branca h1 { font-size: 26px; margin: 0 0 10px 0; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .ficha-branca { background-color: white; color: black; width: 60%; padding: 30px; min-height: 800px; overflow-y: auto; }
+        .ficha-branca h1 { font-size: 24px; margin: 0 0 10px 0; font-weight: 800; display: flex; align-items: center; gap: 10px; }
         .linha-divisora { border-bottom: 2px solid #000; margin-bottom: 20px; }
-        .info-linha { margin: 10px 0; font-size: 14px; font-weight: bold; display: flex; align-items: center; flex-wrap: wrap; }
+        .info-linha { margin: 12px 0; font-size: 14px; font-weight: bold; display: flex; align-items: center; flex-wrap: wrap; }
         .input-campo { border: none; border-bottom: 1px dashed #ccc; font-size: 14px; outline: none; padding: 2px; font-family: inherit; flex: 1; margin-left: 5px; background: transparent; }
-        .select-campo { border: 1px solid #ccc; border-radius: 4px; font-size: 14px; padding: 2px; font-family: inherit; margin-left: 5px; background: white; }
+        .select-campo { border: 1px solid #ccc; border-radius: 4px; font-size: 14px; padding: 4px; font-family: inherit; margin-left: 5px; background: white; }
         .textarea-relatorio { width: 100%; border: 1px dashed #ccc; border-radius: 5px; padding: 8px; font-family: inherit; font-size: 13px; margin-top: 5px; resize: vertical; outline: none; box-sizing: border-box; }
         
         .painel-direito-calc { width: 40%; display: flex; flex-direction: column; padding: 30px; gap: 15px; background: #111827; }
@@ -167,7 +162,7 @@
 <div id="login-screen">
     <div class="box-login">
         <h1 style="font-size: 32px; margin: 0;">POLÍCIA CIVIL</h1>
-        <h2 style="color: var(--accent-color); margin-top: 5px; font-size: 15px; letter-spacing: 2px;">ONE - ESTADO MAIOR</h2>
+        <h2 style="color: var(--accent-color); margin-top: 5px; font-size: 15px; letter-spacing: 2px;">ESTADO DE SAN ANDREAS</h2>
         <p style="opacity: 0.7; margin-bottom: 20px; font-size: 14px;">Autentique-se com sua conta do Discord para acessar o painel.</p>
         <a href="https://discord.com/oauth2/authorize?client_id=1482774609685119187&response_type=token&redirect_uri=https%3A%2F%2Frafaguild4-pixel.github.io%2Fformulariopoliciacivil%2F&scope=identify" class="btn-login">
             🔓 LOGIN VIA DISCORD
@@ -178,14 +173,16 @@
 <div id="main-app">
     <header>
         <div class="logo-area">
-            <img src="https://i.imgur.com/kBDS7BX.png" alt="Logo">
-            <span>POLÍCIA CIVIL ONE</span>
+            <img src="https://i.imgur.com/SUA_LOGO_AQUI.png" alt="Logo">
+            <span>POLÍCIA CIVIL — SAN ANDREAS</span>
         </div>
         <div class="nav-links">
             <a onclick="mostrarHome()" class="active">INÍCIO</a>
             <a onclick="mostrarHome()">INSTITUCIONAL</a>
             <a onclick="mostrarHome()">LEGISLAÇÃO</a>
-            <a onclick="abrirCalculadora()">FORMULÁRIO / B.O.</a>
+            <a onclick="abrirFormularioBO()">FORMULÁRIO / B.O.</a>
+            <a onclick="abrirFormularioSet()">PEDIR SET</a>
+            <a href="https://discord.gg/SEU_DISCORD_AQUI" target="_blank" style="color: #60a5fa;">DISCORD</a>
             <a onclick="logout()" style="color: #ff4757;">SAIR</a>
         </div>
     </header>
@@ -193,26 +190,26 @@
     <div id="view-home" class="wrapper">
         <div>
             <div class="hero-section">
-                <h2>POLÍCIA CIVIL ONE</h2>
+                <h2>POLÍCIA CIVIL - ESTADO DE SAN ANDREAS</h2>
                 <h1>INVESTIGAÇÃO, RIGOR E JUSTIÇA</h1>
-                <p>Sistema oficial de registros de ocorrências e controle interno da corporação.</p>
-                <button class="btn-action-main" onclick="abrirCalculadora()">ABRIR FORMULÁRIO / B.O.</button>
+                <p>Sistema oficial unificado de investigações, registros de ocorrências e controle interno da corporação.</p>
+                <button class="btn-action-main" onclick="abrirFormularioBO()">ABRIR FORMULÁRIO / B.O.</button>
             </div>
 
             <div class="cards-grid">
                 <div class="card-item" onclick="alert('Área institucional em breve.')">
                     <h3>📋 Inscrições</h3>
-                    <p>Inscrições abertas para novos recrutanentos e testes operacionais.</p>
+                    <p>Inscrições abertas para novos recrutamentos e testes operacionais.</p>
                 </div>
-                <div class="card-item" onclick="abrirCalculadora()">
+                <div class="card-item" onclick="abrirFormularioBO()">
                     <h3>⚖️ Registro de Ocorrência & B.O.</h3>
                     <p>Preencha formulários de ocorrências e envie direto para o banco de dados.</p>
                 </div>
-                <div class="card-item" onclick="alert('Consulte o comando.')">
+                <div class="card-item" onclick="abrirFormularioSet()">
                     <h3>👤 Pedir Set / Solicitação</h3>
-                    <p>Solicitações de cargos, alterações de patentes e divisões.</p>
+                    <p>Solicitações de cargos, promoções e alterações de patentes.</p>
                 </div>
-                <div class="card-item" onclick="window.open('https://discord.com', '_blank')">
+                <div class="card-item" onclick="window.open('https://discord.gg/SEU_DISCORD_AQUI', '_blank')">
                     <h3>🎧 Ouvidoria & Suporte</h3>
                     <p>Canal aberto para denúncias internas e ouvidoria civil.</p>
                 </div>
@@ -220,31 +217,24 @@
         </div>
 
         <div class="sidebar-right">
-            <h3>Área do Policial</h3>
+            <h3>Perfil do Policial</h3>
             <div style="display: flex; align-items: center; gap: 10px; margin: 15px 0;">
                 <img id="user-avatar" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--discord-color);" src="" alt="">
                 <div>
-                    <div style="font-size: 11px; color: #94a3b8;">POLICIAL LOGADO</div>
+                    <div style="font-size: 11px; color: #94a3b8;">USUÁRIO LOGADO</div>
                     <strong id="user-name" style="font-size: 14px;">...</strong>
                 </div>
             </div>
-            <div class="agent-info-row">Patente: <strong>Inspetor / Agente</strong></div>
-            <div class="agent-info-row">Divisão: <strong>D.H.P.P</strong></div>
-
-            <div class="quick-links">
-                <h4>Quick Links</h4>
-                <a class="quick-link-item" onclick="abrirCalculadora()">• Novo Registro de B.O.</a>
-                <a class="quick-link-item" onclick="logout()">• Desconectar Sessão</a>
-            </div>
+            <div class="agent-info-row">Patente: <strong id="user-patente" style="color: #f59e0b;">Nenhum</strong></div>
         </div>
     </div>
 
-    <div id="view-calculadora">
+    <div id="view-bo" class="view-form">
         <div style="display: flex; width: 100%;">
             <div class="ficha-branca">
                 <button class="btn-voltar" onclick="mostrarHome()">← Voltar ao Início</button>
                 <h1>
-                    <img src="https://i.imgur.com/kBDS7BX.png" style="width: 35px; height: 35px;" alt="Logo"> 
+                    <img src="https://i.imgur.com/SUA_LOGO_AQUI.png" style="width: 35px; height: 35px;" alt="Logo"> 
                     Polícia Civil - Registro de Ocorrência
                 </h1>
                 <div class="linha-divisora"></div>
@@ -280,13 +270,50 @@
             </div>
 
             <div class="painel-direito-calc">
-                <img src="https://i.imgur.com/kBDS7BX.png" style="width: 100%; height: 120px; border-radius: 8px; object-fit: cover; border: 1px solid #374151;" alt="Banner">
-                
+                <img src="https://i.imgur.com/SEU_BANNER_AQUI.png" style="width: 100%; height: 120px; border-radius: 8px; object-fit: cover; border: 1px solid #374151;" alt="Banner">
                 <div style="background: #1f2937; padding: 15px; border-radius: 8px; font-size: 12px; color: #9ca3af; line-height: 1.4;">
-                    Preencha os campos obrigatórios e clique no botão abaixo para despachar o relatório oficial diretamente para o canal do Discord via Webhook.
+                    Preencha os campos e envie o registro de ocorrência oficial para o canal correspondente no Discord.
                 </div>
+                <button style="background: #27ae60; color: white; border: none; border-radius: 8px; height: 50px; font-weight: bold; cursor: pointer; margin-top: auto;" onclick="enviarWebhookBO()">Enviar Ocorrência</button>
+                <button style="background: #374151; color: white; border: none; border-radius: 8px; height: 40px; font-weight: bold; cursor: pointer;" onclick="mostrarHome()">Cancelar</button>
+            </div>
+        </div>
+    </div>
 
-                <button style="background: #27ae60; color: white; border: none; border-radius: 8px; height: 50px; font-weight: bold; cursor: pointer; margin-top: auto;" onclick="enviarWebhook()">Enviar Ocorrência</button>
+    <div id="view-set" class="view-form">
+        <div style="display: flex; width: 100%;">
+            <div class="ficha-branca">
+                <button class="btn-voltar" onclick="mostrarHome()">← Voltar ao Início</button>
+                <h1>
+                    <img src="https://i.imgur.com/SUA_LOGO_AQUI.png" style="width: 35px; height: 35px;" alt="Logo"> 
+                    Polícia Civil - Solicitação de Set
+                </h1>
+                <div class="linha-divisora"></div>
+
+                <div class="info-linha">👤 Nome do Policial*: <input type="text" id="setTitleNome" class="input-campo"></div>
+                <div class="info-linha">🆔 Passaporte / ID*: <input type="text" id="setTitlePass" class="input-campo"></div>
+                <div class="info-linha">🤝 Recrutador / Superior*: <input type="text" id="setTitleRecrutador" class="input-campo"></div>
+                <div class="info-linha">📅 Data de Recrutamento*: <input type="date" id="setTitleData" class="input-campo"></div>
+                
+                <div class="info-linha">
+                    ⭐ Patente Requisitada*: 
+                    <select id="setTitlePatente" class="select-campo">
+                        <option value="Recruta">Recruta</option>
+                        <option value="Investigador">Investigador</option>
+                        <option value="Investigador Chefe">Investigador Chefe</option>
+                        <option value="Inspetor">Inspetor</option>
+                        <option value="Comissário">Comissário</option>
+                        <option value="Delegado">Delegado</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="painel-direito-calc">
+                <img src="https://i.imgur.com/SEU_BANNER_AQUI.png" style="width: 100%; height: 120px; border-radius: 8px; object-fit: cover; border: 1px solid #374151;" alt="Banner">
+                <div style="background: #1f2937; padding: 15px; border-radius: 8px; font-size: 12px; color: #9ca3af; line-height: 1.4;">
+                    Envie sua solicitação de set/patente para validação da diretoria/comando no Discord.
+                </div>
+                <button style="background: #27ae60; color: white; border: none; border-radius: 8px; height: 50px; font-weight: bold; cursor: pointer; margin-top: auto;" onclick="enviarWebhookSet()">Enviar Pedido de Set</button>
                 <button style="background: #374151; color: white; border: none; border-radius: 8px; height: 40px; font-weight: bold; cursor: pointer;" onclick="mostrarHome()">Cancelar</button>
             </div>
         </div>
@@ -294,8 +321,9 @@
 </div>
 
 <script>
-    // ⚠️ COLOQUE SEU WEBHOOK DO DISCORD ABAIXO
-    const WEBHOOK_URL = "https://discord.com/api/webhooks/1543396649571713174/mhufg-UbWZpa2jXEq0qoVkGgDfsyvvhLHjwoFqIlllz_AzOYz6vwb4gJ2Somar073Jlq"; 
+    // ⚠️ CONFIGURAÇÃO DOS WEBHOOKS DO DISCORD (COLOQUE SEUS LINKS AQUI)
+    const WEBHOOK_BO = "URL_DO_WEBHOOK_DE_BO_AQUI"; 
+    const WEBHOOK_SET = "URL_DO_WEBHOOK_DE_PEDIR_SET_AQUI";
 
     function checkLogin() {
         const fragment = new URLSearchParams(window.location.hash.slice(1));
@@ -309,6 +337,10 @@
                 document.getElementById('user-name').innerText = user.username;
                 document.getElementById('user-avatar').src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
                 
+                // Exemplo para leitura futura de patente / cargos do Discord se desejar integrar:
+                // Por padrão começa como Nenhum conforme solicitado
+                document.getElementById('user-patente').innerText = "Nenhum";
+                
                 window.discordUser = user; 
                 atualizarDataHora();
             }).catch(() => logout());
@@ -317,14 +349,25 @@
 
     function logout() { window.location.hash = ""; window.location.reload(); }
 
-    function abrirCalculadora() {
+    function esconderTudo() {
         document.getElementById('view-home').style.display = 'none';
-        document.getElementById('view-calculadora').style.display = 'block';
+        document.getElementById('view-bo').style.display = 'none';
+        document.getElementById('view-set').style.display = 'none';
     }
 
     function mostrarHome() {
-        document.getElementById('view-calculadora').style.display = 'none';
+        esconderTudo();
         document.getElementById('view-home').style.display = 'grid';
+    }
+
+    function abrirFormularioBO() {
+        esconderTudo();
+        document.getElementById('view-bo').style.display = 'block';
+    }
+
+    function abrirFormularioSet() {
+        esconderTudo();
+        document.getElementById('view-set').style.display = 'block';
     }
 
     function atualizarDataHora() {
@@ -333,7 +376,8 @@
         document.getElementById('inHora').value = agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
     }
 
-    function enviarWebhook() {
+    // ENVIO WEBHOOK B.O.
+    function enviarWebhookBO() {
         const data = document.getElementById('inData').value;
         const hora = document.getElementById('inHora').value;
         const policial = document.getElementById('inPrisaoPor').value;
@@ -370,7 +414,7 @@
             }]
         };
 
-        fetch(WEBHOOK_URL, {
+        fetch(WEBHOOK_BO, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -380,7 +424,55 @@
                 alert("Ocorrência enviada com sucesso!");
                 mostrarHome();
             } else {
-                alert("Erro ao enviar o webhook.");
+                alert("Erro ao enviar o webhook de B.O.");
+            }
+        })
+        .catch(() => alert("Erro de conexão."));
+    }
+
+    // ENVIO WEBHOOK PEDIR SET
+    function enviarWebhookSet() {
+        const nome = document.getElementById('setTitleNome').value;
+        const pass = document.getElementById('setTitlePass').value;
+        const recrutador = document.getElementById('setTitleRecrutador').value;
+        const dataRecrutamento = document.getElementById('setTitleData').value;
+        const patente = document.getElementById('setTitlePatente').value;
+
+        if (!nome || !pass || !recrutador || !dataRecrutamento || !patente) {
+            alert("Por favor, preencha todos os campos obrigatórios (*)");
+            return;
+        }
+
+        const payload = {
+            embeds: [{
+                title: "⭐ POLÍCIA CIVIL - SOLICITAÇÃO DE SET",
+                color: 16761035,
+                fields: [
+                    { name: "👤 Nome do Policial", value: nome, inline: true },
+                    { name: "🆔 Passaporte / ID", value: pass, inline: true },
+                    { name: "🤝 Recrutador / Superior", value: recrutador, inline: true },
+                    { name: "📅 Data de Recrutamento", value: dataRecrutamento, inline: true },
+                    { name: "⭐ Patente Requisitada", value: patente, inline: false }
+                ],
+                footer: {
+                    text: `Solicitado por ${window.discordUser ? window.discordUser.username : 'Sistema'}`,
+                    icon_url: window.discordUser ? `https://cdn.discordapp.com/avatars/${window.discordUser.id}/${window.discordUser.avatar}.png` : ""
+                },
+                timestamp: new Date().toISOString()
+            }]
+        };
+
+        fetch(WEBHOOK_SET, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(res => {
+            if (res.ok) {
+                alert("Solicitação de Set enviada com sucesso!");
+                mostrarHome();
+            } else {
+                alert("Erro ao enviar o webhook de Pedir Set.");
             }
         })
         .catch(() => alert("Erro de conexão."));
