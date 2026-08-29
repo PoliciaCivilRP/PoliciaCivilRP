@@ -1,996 +1,264 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-
+<html lang="pt-br">
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Polícia Civil - Recrutamento</title>
-
-
-<style>
-
-:root{
-
-    --azul:#071b3d;
-    --azul2:#0a265c;
-    --discord:#5865F2;
-    --verde:#27ae60;
-
-}
-
-
-*{
-
-    box-sizing:border-box;
-
-}
-
-
-
-body{
-
-    margin:0;
-
-    min-height:100vh;
-
-    background:
-    linear-gradient(135deg,#071b3d,#0a265c);
-
-    font-family:'Segoe UI',Arial,sans-serif;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    color:white;
-
-}
-
-
-
-/* LOGIN */
-
-#login-screen{
-
-    width:450px;
-
-    background:rgba(0,0,0,.55);
-
-    padding:45px;
-
-    border-radius:20px;
-
-    text-align:center;
-
-    border:2px solid var(--discord);
-
-    box-shadow:
-    0 0 25px rgba(88,101,242,.4);
-
-}
-
-
-#login-screen h1{
-
-    margin:0;
-
-    font-size:38px;
-
-}
-
-
-#login-screen h2{
-
-    color:#00f2ff;
-
-    font-size:18px;
-
-    letter-spacing:2px;
-
-}
-
-
-
-.discord-btn{
-
-    display:block;
-
-    margin-top:25px;
-
-    background:var(--discord);
-
-    color:white;
-
-    padding:15px;
-
-    border-radius:10px;
-
-    text-decoration:none;
-
-    font-weight:bold;
-
-    transition:.3s;
-
-}
-
-
-.discord-btn:hover{
-
-    transform:scale(1.05);
-
-    background:#4752c4;
-
-}
-
-
-
-
-/* APLICATIVO */
-
-
-#app{
-
-    display:none;
-
-    width:900px;
-
-    background:rgba(0,0,0,.45);
-
-    border-radius:20px;
-
-    overflow:hidden;
-
-    box-shadow:0 10px 40px #000;
-
-}
-
-
-
-/* BARRA USUARIO */
-
-
-#user-bar{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:15px;
-
-    padding:15px;
-
-    background:rgba(0,0,0,.4);
-
-}
-
-
-#user-avatar{
-
-    width:45px;
-
-    height:45px;
-
-    border-radius:50%;
-
-    border:2px solid var(--discord);
-
-}
-
-
-#logout{
-
-    margin-left:auto;
-
-    background:#ff4757;
-
-    border:none;
-
-    color:white;
-
-    padding:8px 15px;
-
-    border-radius:6px;
-
-    cursor:pointer;
-
-}
-
-
-
-/* FORMULARIO */
-
-
-.container{
-
-    background:white;
-
-    color:black;
-
-    padding:35px;
-
-}
-
-
-
-.container h1{
-
-    text-align:center;
-
-    color:#071b3d;
-
-}
-
-
-
-.linha{
-
-    border-bottom:2px solid #071b3d;
-
-    margin-bottom:25px;
-
-}
-
-
-
-
-label{
-
-    display:block;
-
-    font-weight:bold;
-
-    margin-top:15px;
-
-}
-
-
-
-input,
-textarea,
-select{
-
-
-    width:100%;
-
-    margin-top:5px;
-
-    padding:12px;
-
-    border-radius:8px;
-
-    border:1px solid #ccc;
-
-    font-family:inherit;
-
-
-}
-
-
-
-textarea{
-
-    height:100px;
-
-    resize:none;
-
-}
-
-
-
-
-.enviar{
-
-    margin-top:25px;
-
-    width:100%;
-
-    height:55px;
-
-    background:var(--verde);
-
-    color:white;
-
-    border:0;
-
-    border-radius:10px;
-
-    font-weight:bold;
-
-    cursor:pointer;
-
-    font-size:16px;
-
-}
-
-
-.enviar:hover{
-
-    background:#219150;
-
-}
-
-
-
-.aviso{
-
-    margin-top:20px;
-
-    padding:15px;
-
-    background:#eee;
-
-    border-radius:8px;
-
-    font-size:13px;
-
-}
-
-
-
-</style>
-
-</head>
-
-
-<body onload="checkLogin()">
-
-
-
-<div id="login-screen">
-
-
-<h1>🚔 POLÍCIA CIVIL</h1>
-
-<h2>SISTEMA DE RECRUTAMENTO</h2>
-
-
-<p>
-
-Autentique-se com seu Discord para iniciar sua inscrição.
-
-</p>
-
-
-
-<a class="discord-btn"
-
-href="https://discord.com/oauth2/authorize?client_id=1482774609685119187&response_type=token&redirect_uri=https%3A%2F%2Frafaguild4-pixel.github.io%2Fformulariopoliciacivil%2F&scope=identify">
-
-
-🔵 LOGIN COM DISCORD
-
-
-</a>
-
-
-</div>
-
-<div id="app">
-
-
-<div id="user-bar">
-
-
-<img id="user-avatar">
-
-
-<div>
-
-<span>Candidato:</span>
-
-<strong id="user-name">
-Carregando...
-</strong>
-
-</div>
-
-
-
-<button id="logout" onclick="logout()">
-
-SAIR
-
-</button>
-
-
-</div>
-
-
-
-
-<div class="container">
-
-
-<h1>
-🚔 Ficha de Recrutamento
-</h1>
-
-
-<div class="linha"></div>
-
-
-
-
-<label>
-
-👤 Nome RP
-
-<input 
-type="text"
-id="nomeRP"
-placeholder="Digite seu nome no servidor">
-
-</label>
-
-
-
-
-
-<label>
-
-🆔 ID no Servidor
-
-<input 
-type="text"
-id="idServidor"
-placeholder="Ex: 1234">
-
-</label>
-
-
-
-
-
-<label>
-
-🎂 Idade
-
-<input 
-type="number"
-id="idade"
-placeholder="Digite sua idade">
-
-</label>
-
-
-
-
-
-<label>
-
-🎮 Quantas horas possui de RP?
-
-<input 
-type="text"
-id="horasRP"
-placeholder="Ex: 500 horas">
-
-</label>
-
-
-
-
-
-<label>
-
-👮 Já participou de alguma corporação?
-
-<select id="experiencia">
-
-
-<option value="Não">
-Não
-</option>
-
-
-<option value="Sim - Polícia Militar">
-Sim - Polícia Militar
-</option>
-
-
-<option value="Sim - Polícia Civil">
-Sim - Polícia Civil
-</option>
-
-
-<option value="Sim - Outra corporação">
-Sim - Outra corporação
-</option>
-
-
-</select>
-
-
-</label>
-
-
-
-
-
-<label>
-
-📚 Experiências / Cursos / Conhecimentos
-
-
-<textarea 
-id="experiencias"
-placeholder="Informe suas experiências anteriores...">
-
-</textarea>
-
-
-</label>
-
-
-
-
-
-<label>
-
-⏰ Disponibilidade de horário
-
-
-<input
-type="text"
-id="disponibilidade"
-placeholder="Ex: Todos os dias após 18h">
-
-</label>
-
-
-
-
-
-<label>
-
-📝 Por que deseja ingressar na Polícia Civil?
-
-
-<textarea
-id="motivo"
-placeholder="Explique o motivo da sua candidatura...">
-
-</textarea>
-
-
-</label>
-
-
-
-
-
-<label>
-
-📖 Conhecimento da documentação
-
-
-<select id="documentacao">
-
-
-<option value="Sim">
-Sim, li toda documentação
-</option>
-
-
-<option value="Não">
-Não li a documentação
-</option>
-
-
-</select>
-
-
-</label>
-
-
-
-
-
-
-<div class="aviso">
-
-
-⚠️ Ao enviar sua inscrição, todas as informações serão encaminhadas para a equipe de recrutamento.
-
-
-</div>
-
-
-
-
-
-<button 
-class="enviar"
-onclick="enviarFormulario()">
-
-
-🚔 ENVIAR INSCRIÇÃO
-
-
-</button>
-
-
-
-</div>
-
-
-<script>
-
-
-// COLOQUE SEU WEBHOOK DO DISCORD AQUI
-const WEBHOOK_URL = "https://discord.com/api/webhooks/1531035867978793051/FS7jYRHAJ6KuZwn_1SsnfNphbOBHpLZ0T_DLe9r70AKC-0-p2iQBcHhFzqf9EZCcFyj1";
-
-
-
-// LOGIN DISCORD
-
-function checkLogin(){
-
-
-    const fragment = new URLSearchParams(
-        window.location.hash.substring(1)
-    );
-
-
-    const token = fragment.get("access_token");
-
-
-    if(!token){
-
-        return;
-
-    }
-
-
-
-    fetch("https://discord.com/api/users/@me",
-    {
-
-        headers:{
-
-            authorization:`Bearer ${token}`
-
+    <meta charset="UTF-8">
+    <title>Polícia Civil - Formulário de Ocorrência</title>
+    <style>
+        :root {
+            --bg-blue: #111827;
+            --accent-color: #3b82f6;
+            --discord-color: #5865F2;
+        }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background-color: var(--bg-blue); 
+            margin: 0; 
+            padding: 10px; 
+            display: flex; 
+            justify-content: center; 
+            color: white; 
+            min-height: 100vh;
+            align-items: center;
         }
 
-    })
+        /* TELA DE LOGIN */
+        #login-screen {
+            text-align: center;
+            background: rgba(17, 24, 39, 0.9);
+            padding: 50px;
+            border-radius: 20px;
+            border: 2px solid var(--discord-color);
+            box-shadow: 0 0 20px rgba(88, 101, 242, 0.3);
+        }
+        .btn-login {
+            background-color: var(--discord-color);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: 0.3s;
+            margin-top: 20px;
+        }
+        .btn-login:hover { background-color: #4752c4; transform: scale(1.05); }
 
+        /* BARRA DO USUÁRIO LOGADO */
+        #user-bar {
+            display: none;
+            background: rgba(0,0,0,0.4);
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+            justify-content: space-between;
+            width: 1000px;
+            box-sizing: border-box;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .user-avatar { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--discord-color); }
 
-    .then(response => response.json())
+        /* CONTAINER PRINCIPAL */
+        .main-container { display: none; width: 1000px; background-color: #1f2937; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        .ficha-branca { background-color: white; color: black; width: 60%; padding: 30px; min-height: 850px; overflow-y: auto; }
+        .ficha-branca h1 { font-size: 28px; margin: 0 0 10px 0; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .logo-img { width: 40px; height: 40px; object-fit: contain; }
+        .linha-divisora { border-bottom: 2px solid #000; margin-bottom: 20px; }
 
+        .info-linha { margin: 10px 0; font-size: 14px; font-weight: bold; display: flex; align-items: center; flex-wrap: wrap; }
+        .input-campo { border: none; border-bottom: 1px dashed #ccc; font-size: 14px; outline: none; padding: 2px; font-family: inherit; flex: 1; margin-left: 5px; background: transparent; }
+        .select-campo { border: 1px solid #ccc; border-radius: 4px; font-size: 14px; padding: 2px; font-family: inherit; margin-left: 5px; background: white; }
+        .obrigatorio { color: #d63031; margin-left: 2px; }
+        
+        .textarea-relatorio { 
+            width: 100%; border: 1px dashed #ccc; border-radius: 5px; padding: 8px; 
+            font-family: inherit; font-size: 13px; margin-top: 5px; resize: vertical; outline: none; box-sizing: border-box;
+        }
 
-    .then(user =>{
+        .painel-direito { width: 40%; display: flex; flex-direction: column; padding: 30px; gap: 15px; background: #111827; }
+        .box-atenuantes { background-color: #1f2937; color: white; width: 100%; padding: 20px; border-radius: 10px; box-sizing: border-box; border: 1px solid rgba(255,255,255,0.1); }
+        .box-atenuantes h3 { margin-top: 0; font-size: 16px; border-bottom: 1px solid #374151; padding-bottom: 5px; color: var(--accent-color); }
 
+        .container-botoes-acao { display: flex; gap: 10px; }
+        .btn-acao { border: none; border-radius: 8px; height: 50px; font-weight: 900; font-size: 13px; cursor: pointer; text-transform: uppercase; transition: 0.3s; flex: 1; }
+        .btn-discord { background: #5865F2; color: white; }
+        .btn-discord:hover { background: #4752c4; }
+        .btn-enviar { background: #27ae60; color: white; }
+        .btn-enviar:hover { background: #219150; }
+        
+        .banner-preview { width: 100%; height: 120px; border-radius: 8px; object-fit: cover; margin-bottom: 15px; border: 1px solid #374151; }
+    </style>
+</head>
+<body onload="checkLogin()">
 
-        window.discordUser = user;
+<div id="login-screen">
+    <h1 style="font-size: 35px; margin: 0;">POLÍCIA CIVIL</h1>
+    <h2 style="color: var(--accent-color); margin-top: 5px; font-size: 16px; letter-spacing: 2px;">ESTADO DE SAN ANDREAS</h2>
+    <p style="opacity: 0.7; margin-bottom: 20px;">Autentique-se com sua conta do Discord para acessar o sistema.</p>
+    <a href="https://discord.com/oauth2/authorize?client_id=1482774609685119187&response_type=token&redirect_uri=https%3A%2F%2Frafaguild4-pixel.github.io%2Fcalculadoracbn%2F&scope=identify" class="btn-login">
+        🔓 LOGIN VIA DISCORD
+    </a>
+</div>
 
+<div style="display: flex; flex-direction: column; align-items: center;">
+    
+    <div id="user-bar">
+        <div class="user-info">
+            <img id="user-avatar" class="user-avatar" src="" alt="">
+            <span>Agente Logado: <strong id="user-name">...</strong></span>
+        </div>
+        <button onclick="logout()" style="background:#ff4757; border:none; color:white; border-radius:5px; cursor:pointer; padding:5px 10px; font-size:11px; font-weight:bold;">SAIR</button>
+    </div>
 
+    <div class="main-container" id="main-app">
+        
+        <div class="ficha-branca">
+            <h1>
+                <img src="https://i.imgur.com/SUA_LOGO_AQUI.png" class="logo-img" alt="Logo"> 
+                Polícia Civil - B.O. / Formulário
+            </h1>
+            <div class="linha-divisora"></div>
 
-        document.getElementById("login-screen").style.display="none";
+            <div class="info-linha">📅 Data: <input type="text" id="inData" class="input-campo"> 🕒 Hora: <input type="text" id="inHora" class="input-campo"></div>
+            
+            <div class="info-linha">
+                👮‍♂️ Oficial Responsável<span class="obrigatorio">*</span>: <input type="text" id="inPrisaoPor" class="input-campo"> 
+                🆔 ID<span class="obrigatorio">*</span>: <input type="text" id="idPolicial" class="input-campo" style="max-width: 60px;">
+            </div>
 
+            <div class="info-linha">
+                🏢 Divisão: 
+                <select id="inUnidade" class="select-campo">
+                    <option value="D.H.P.P">D.H.P.P</option>
+                    <option value="Investigação">Investigação</option>
+                    <option value="Operações Especiais">Operações Especiais</option>
+                    <option value="Plantão">Plantão</option>
+                </select>
+            </div>
 
-        document.getElementById("app").style.display="block";
+            <div class="info-linha">
+                ⚖️ Advogado Presente: <input type="text" id="inAdvogado" class="input-campo" placeholder="Nome do Advogado (Opcional)"> 
+                🆔 ID: <input type="text" id="idAdvogado" class="input-campo" style="max-width: 80px;">
+            </div>
+            
+            <div style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px;">
+                <div class="info-linha">👤 Cidadão Envolvido / Suspeito<span class="obrigatorio">*</span>: <input type="text" id="inNome" class="input-campo"> 🆔 ID<span class="obrigatorio">*</span>: <input type="text" id="inPass" class="input-campo" style="max-width: 80px;"></div>
+                
+                <label style="font-size: 13px; font-weight: bold; margin-top: 10px; display: block;">📝 Relatório / Descrição dos Fatos:</label>
+                <textarea id="inRelatorio" class="textarea-relatorio" rows="6" placeholder="Descreva detalhadamente a ocorrência, provas coletadas e depoimentos..."></textarea>
+            </div>
+        </div>
 
+        <div class="painel-direito">
+            <img src="https://i.imgur.com/SEU_BANNER_AQUI.png" class="banner-preview" alt="Banner Policia Civil">
 
+            <div class="box-atenuantes">
+                <h3>📌 Informações Adicionais</h3>
+                <p style="font-size: 12px; color: #9ca3af; line-height: 1.4;">
+                    Preencha todos os campos obrigatórios (*). Ao clicar em <b>"Enviar Ocorrência"</b>, o relatório será gerado de forma oficial e enviado diretamente para o canal do Discord configurado via Webhook.
+                </p>
+            </div>
+            
+            <div class="container-botoes-acao" style="margin-top: auto;">
+                <button class="btn-acao btn-enviar" onclick="enviarWebhook()">Enviar Ocorrência</button>
+            </div>
 
-        document.getElementById("user-name").innerText =
-        user.username;
+            <button class="btn-acao" style="background: #374151; color: white; height: 40px; font-size: 12px; flex: none;" onclick="location.reload()">Limpar Formulário</button>
+        </div>
+    </div>
+</div>
 
+<script>
+    // ⚠️ COLOQUE SEU WEBHOOK DO DISCORD ABAIXO ENTRE AS ASPAS
+    const WEBHOOK_URL = "SEU_WEBHOOK_DO_DISCORD_AQUI"; 
 
-
-        document.getElementById("user-avatar").src =
-
-        `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
-
-
-
-    })
-
-
-    .catch(()=>{
-
-
-        logout();
-
-
-    });
-
-
-
-}
-
-
-
-
-// SAIR
-
-function logout(){
-
-
-    window.location.hash="";
-
-    location.reload();
-
-
-}
-
-
-
-
-
-// ENVIAR FORMULÁRIO
-
-
-function enviarFormulario(){
-
-
-
-    if(!window.discordUser){
-
-
-        alert("Faça login novamente.");
-
-
-        return;
-
-
+    function checkLogin() {
+        const fragment = new URLSearchParams(window.location.hash.slice(1));
+        const token = fragment.get('access_token');
+        if (token) {
+            fetch('https://discord.com/api/users/@me', { headers: { authorization: `Bearer ${token}` } })
+            .then(res => res.json())
+            .then(user => {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-app').style.display = 'flex';
+                document.getElementById('user-bar').style.display = 'flex';
+                document.getElementById('user-name').innerText = user.username;
+                document.getElementById('user-avatar').src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+                
+                window.discordUser = user; 
+                atualizarDataHora();
+            }).catch(() => logout());
+        }
     }
 
+    function logout() { window.location.hash = ""; window.location.reload(); }
 
-
-
-
-    const dados = {
-
-
-        nome:
-        document.getElementById("nomeRP").value,
-
-
-        id:
-        document.getElementById("idServidor").value,
-
-
-        idade:
-        document.getElementById("idade").value,
-
-
-        horas:
-        document.getElementById("horasRP").value,
-
-
-        experiencia:
-        document.getElementById("experiencia").value,
-
-
-        cursos:
-        document.getElementById("experiencias").value,
-
-
-        horario:
-        document.getElementById("disponibilidade").value,
-
-
-        motivo:
-        document.getElementById("motivo").value,
-
-
-        documento:
-        document.getElementById("documentacao").value
-
-
-    };
-
-
-
-
-
-    if(
-        !dados.nome ||
-        !dados.id ||
-        !dados.idade ||
-        !dados.motivo
-    ){
-
-        alert("Preencha todos os campos obrigatórios.");
-
-        return;
-
+    function atualizarDataHora() {
+        const agora = new Date();
+        document.getElementById('inData').value = agora.toLocaleDateString('pt-BR');
+        document.getElementById('inHora').value = agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
     }
 
-
-
-
-
-    fetch(WEBHOOK_URL,
-    {
-
-
-        method:"POST",
-
-
-        headers:{
-
-            "Content-Type":"application/json"
-
-        },
-
-
-        body:JSON.stringify({
-
-
-            embeds:[{
-
-
-                title:"🚔 NOVO RECRUTAMENTO - POLÍCIA CIVIL",
-
-
-                color:3447003,
-
-
-
-                thumbnail:{
-
-                    url:
-                    `https://cdn.discordapp.com/avatars/${window.discordUser.id}/${window.discordUser.avatar}.png`
-
-                },
-
-
-
-                fields:[
-
-
-                    {
-
-                    name:"👤 Discord",
-
-                    value:`<@${window.discordUser.id}>`
-
-                    },
-
-
-                    {
-
-                    name:"🪪 Nome RP",
-
-                    value:dados.nome
-
-                    },
-
-
-                    {
-
-                    name:"🆔 ID Servidor",
-
-                    value:dados.id
-
-                    },
-
-
-                    {
-
-                    name:"🎂 Idade",
-
-                    value:dados.idade
-
-                    },
-
-
-                    {
-
-                    name:"🎮 Horas de RP",
-
-                    value:dados.horas || "Não informado"
-
-                    },
-
-
-                    {
-
-                    name:"👮 Experiência",
-
-                    value:dados.experiencia
-
-                    },
-
-
-                    {
-
-                    name:"📚 Cursos / Conhecimentos",
-
-                    value:dados.cursos || "Não informado"
-
-                    },
-
-
-                    {
-
-                    name:"⏰ Disponibilidade",
-
-                    value:dados.horario || "Não informado"
-
-                    },
-
-
-                    {
-
-                    name:"📖 Documentação",
-
-                    value:dados.documento
-
-                    },
-
-
-                    {
-
-                    name:"📝 Motivo",
-
-                    value:dados.motivo
-
-                    }
-
-
-
+    function enviarWebhook() {
+        const data = document.getElementById('inData').value;
+        const hora = document.getElementById('inHora').value;
+        const policial = document.getElementById('inPrisaoPor').value;
+        const idPolicial = document.getElementById('idPolicial').value;
+        const unidade = document.getElementById('inUnidade').value;
+        const advogado = document.getElementById('inAdvogado').value || "Nenhum";
+        const idAdvogado = document.getElementById('idAdvogado').value || "-";
+        const cidadao = document.getElementById('inNome').value;
+        const idCidadao = document.getElementById('inPass').value;
+        const relatorio = document.getElementById('inRelatorio').value;
+
+        if (!policial || !idPolicial || !cidadao || !idCidadao || !relatorio) {
+            alert("Por favor, preencha todos os campos obrigatórios (*)!");
+            return;
+        }
+
+        const payload = {
+            embeds: [{
+                title: "🏛️ POLÍCIA CIVIL - REGISTRO DE OCORRÊNCIA",
+                color: 39423, // Cor azulada estilo polícia
+                fields: [
+                    { name: "📅 Data / Hora", value: `${data} às ${hora}`, inline: true },
+                    { name: "🏢 Divisão", value: unidade, inline: true },
+                    { name: "👮‍♂️ Agente Responsável", value: `${policial} (ID: ${idPolicial})`, inline: false },
+                    { name: "👤 Cidadão / Suspeito", value: `${cidadao} (ID: ${idCidadao})`, inline: true },
+                    { name: "⚖️ Advogado", value: `${advogado} (ID: ${idAdvogado})`, inline: true },
+                    { name: "📝 Relatório dos Fatos", value: relatorio, inline: false }
                 ],
-
-
-
-                footer:{
-
-                    text:"Sistema de Recrutamento"
-
+                footer: {
+                    text: `Registrado por ${window.discordUser ? window.discordUser.username : 'Sistema Policial'}`,
+                    icon_url: window.discordUser ? `https://cdn.discordapp.com/avatars/${window.discordUser.id}/${window.discordUser.avatar}.png` : ""
                 },
-
-
-
-                timestamp:new Date()
-
-
+                timestamp: new Date().toISOString()
             }]
+        };
 
-
+        fetch(WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
         })
-
-
-    })
-
-
-
-    .then(()=>{
-
-
-        alert("✅ Inscrição enviada com sucesso!");
-
-        location.reload();
-
-
-    })
-
-
-    .catch(error=>{
-
-
-        console.log(error);
-
-
-        alert("❌ Erro ao enviar inscrição.");
-
-
-    });
-
-
-
-}
-
-
-
+        .then(res => {
+            if (res.ok) {
+                alert("Ocorrência enviada com sucesso para o Discord!");
+                location.reload();
+            } else {
+                alert("Erro ao enviar o webhook. Verifique se a URL do Webhook está correta.");
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Erro de conexão ao tentar enviar o webhook.");
+        });
+    }
 </script>
-
-
 </body>
-
 </html>
