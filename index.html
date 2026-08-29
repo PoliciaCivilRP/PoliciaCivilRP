@@ -2,33 +2,39 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Polícia Civil - Formulário de Ocorrência</title>
+    <title>Polícia Civil - Estado de San Andreas</title>
     <style>
         :root {
-            --bg-blue: #111827;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
             --accent-color: #3b82f6;
             --discord-color: #5865F2;
         }
         body { 
             font-family: 'Segoe UI', sans-serif; 
-            background-color: var(--bg-blue); 
+            background-color: var(--bg-dark); 
             margin: 0; 
-            padding: 10px; 
-            display: flex; 
-            justify-content: center; 
+            padding: 0; 
             color: white; 
             min-height: 100vh;
-            align-items: center;
         }
 
         /* TELA DE LOGIN */
         #login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
             text-align: center;
-            background: rgba(17, 24, 39, 0.9);
+            background: rgba(15, 23, 42, 0.95);
+        }
+        .box-login {
+            background: rgba(30, 41, 59, 0.8);
             padding: 50px;
             border-radius: 20px;
             border: 2px solid var(--discord-color);
-            box-shadow: 0 0 20px rgba(88, 101, 242, 0.3);
+            box-shadow: 0 0 30px rgba(88, 101, 242, 0.3);
         }
         .btn-login {
             background-color: var(--discord-color);
@@ -46,135 +52,249 @@
         }
         .btn-login:hover { background-color: #4752c4; transform: scale(1.05); }
 
-        /* BARRA DO USUÁRIO LOGADO */
-        #user-bar {
-            display: none;
-            background: rgba(0,0,0,0.4);
-            padding: 10px 20px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            align-items: center;
+        /* SISTEMA PRINCIPAL (OCULTO ATÉ LOGAR) */
+        #main-app { display: none; }
+
+        /* HEADER / NAVBAR */
+        header {
+            background: #0b132b;
+            padding: 15px 40px;
+            display: flex;
             justify-content: space-between;
-            width: 1000px;
-            box-sizing: border-box;
-            border: 1px solid rgba(255,255,255,0.1);
+            align-items: center;
+            border-bottom: 2px solid rgba(255,255,255,0.05);
         }
-        .user-info { display: flex; align-items: center; gap: 10px; }
-        .user-avatar { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--discord-color); }
+        .logo-area { display: flex; align-items: center; gap: 12px; font-weight: bold; font-size: 18px; letter-spacing: 1px; }
+        .logo-area img { width: 35px; height: 35px; object-fit: contain; }
+        .nav-links { display: flex; gap: 30px; font-size: 14px; font-weight: 600; }
+        .nav-links a { color: #94a3b8; text-decoration: none; cursor: pointer; transition: 0.2s; }
+        .nav-links a:hover, .nav-links a.active { color: white; }
 
-        /* CONTAINER PRINCIPAL */
-        .main-container { display: none; width: 1000px; background-color: #1f2937; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        /* LAYOUT PRINCIPAL (HOME) */
+        .wrapper {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 30px;
+        }
+
+        /* HERO / BANNER */
+        .hero-section {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://i.imgur.com/SEU_BANNER_AQUI.png') center/cover;
+            border-radius: 15px;
+            padding: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+        }
+        .hero-section h2 { font-size: 28px; margin: 0 0 5px 0; color: #60a5fa; }
+        .hero-section h1 { font-size: 38px; margin: 0 0 15px 0; font-weight: 800; text-transform: uppercase; }
+        .hero-section p { font-size: 14px; opacity: 0.8; max-width: 600px; line-height: 1.5; margin-bottom: 20px; }
         
-        .ficha-branca { background-color: white; color: black; width: 60%; padding: 30px; min-height: 850px; overflow-y: auto; }
-        .ficha-branca h1 { font-size: 28px; margin: 0 0 10px 0; font-weight: 800; display: flex; align-items: center; gap: 10px; }
-        .logo-img { width: 40px; height: 40px; object-fit: contain; }
-        .linha-divisora { border-bottom: 2px solid #000; margin-bottom: 20px; }
+        .btn-action-main {
+            background: #f59e0b;
+            color: #000;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-action-main:hover { background: #d97706; }
 
+        /* GRID DE CARDS */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .card-item {
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .card-item:hover { border-color: var(--accent-color); transform: translateY(-3px); }
+        .card-item h3 { margin: 0 0 8px 0; font-size: 16px; display: flex; align-items: center; gap: 8px; color: #f8fafc; }
+        .card-item p { margin: 0; font-size: 12px; color: #94a3b8; line-height: 1.4; }
+
+        /* PAINEL DIREITO (ÁREA DO POLICIAL) */
+        .sidebar-right {
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+            height: fit-content;
+        }
+        .sidebar-right h3 { font-size: 14px; color: #f59e0b; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-top: 0; }
+        .agent-info-row { font-size: 13px; margin: 10px 0; color: #cbd5e1; }
+        .agent-info-row strong { color: white; }
+        
+        .quick-links { margin-top: 20px; }
+        .quick-links h4 { font-size: 12px; color: #94a3b8; text-transform: uppercase; margin-bottom: 10px; }
+        .quick-link-item { font-size: 13px; color: #60a5fa; margin: 6px 0; cursor: pointer; display: block; text-decoration: none; }
+        .quick-link-item:hover { text-decoration: underline; }
+
+        /* SEÇÃO DA CALCULADORA / FORMULÁRIO (INICIALMENTE OCULTA) */
+        #view-calculadora {
+            display: none;
+            max-width: 1000px;
+            margin: 30px auto;
+            background: #1f2937;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .ficha-branca { background-color: white; color: black; width: 60%; padding: 30px; min-height: 850px; overflow-y: auto; }
+        .ficha-branca h1 { font-size: 26px; margin: 0 0 10px 0; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+        .linha-divisora { border-bottom: 2px solid #000; margin-bottom: 20px; }
         .info-linha { margin: 10px 0; font-size: 14px; font-weight: bold; display: flex; align-items: center; flex-wrap: wrap; }
         .input-campo { border: none; border-bottom: 1px dashed #ccc; font-size: 14px; outline: none; padding: 2px; font-family: inherit; flex: 1; margin-left: 5px; background: transparent; }
         .select-campo { border: 1px solid #ccc; border-radius: 4px; font-size: 14px; padding: 2px; font-family: inherit; margin-left: 5px; background: white; }
-        .obrigatorio { color: #d63031; margin-left: 2px; }
+        .textarea-relatorio { width: 100%; border: 1px dashed #ccc; border-radius: 5px; padding: 8px; font-family: inherit; font-size: 13px; margin-top: 5px; resize: vertical; outline: none; box-sizing: border-box; }
         
-        .textarea-relatorio { 
-            width: 100%; border: 1px dashed #ccc; border-radius: 5px; padding: 8px; 
-            font-family: inherit; font-size: 13px; margin-top: 5px; resize: vertical; outline: none; box-sizing: border-box;
-        }
-
-        .painel-direito { width: 40%; display: flex; flex-direction: column; padding: 30px; gap: 15px; background: #111827; }
-        .box-atenuantes { background-color: #1f2937; color: white; width: 100%; padding: 20px; border-radius: 10px; box-sizing: border-box; border: 1px solid rgba(255,255,255,0.1); }
-        .box-atenuantes h3 { margin-top: 0; font-size: 16px; border-bottom: 1px solid #374151; padding-bottom: 5px; color: var(--accent-color); }
-
-        .container-botoes-acao { display: flex; gap: 10px; }
-        .btn-acao { border: none; border-radius: 8px; height: 50px; font-weight: 900; font-size: 13px; cursor: pointer; text-transform: uppercase; transition: 0.3s; flex: 1; }
-        .btn-discord { background: #5865F2; color: white; }
-        .btn-discord:hover { background: #4752c4; }
-        .btn-enviar { background: #27ae60; color: white; }
-        .btn-enviar:hover { background: #219150; }
-        
-        .banner-preview { width: 100%; height: 120px; border-radius: 8px; object-fit: cover; margin-bottom: 15px; border: 1px solid #374151; }
+        .painel-direito-calc { width: 40%; display: flex; flex-direction: column; padding: 30px; gap: 15px; background: #111827; }
+        .btn-voltar { background: #374151; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; margin-bottom: 15px; width: fit-content; }
+        .btn-voltar:hover { background: #4b5563; }
     </style>
 </head>
 <body onload="checkLogin()">
 
 <div id="login-screen">
-    <h1 style="font-size: 35px; margin: 0;">POLÍCIA CIVIL</h1>
-    <h2 style="color: var(--accent-color); margin-top: 5px; font-size: 16px; letter-spacing: 2px;">ESTADO DE SAN ANDREAS</h2>
-    <p style="opacity: 0.7; margin-bottom: 20px;">Autentique-se com sua conta do Discord para acessar o sistema.</p>
-    <a href="https://discord.com/oauth2/authorize?client_id=1482774609685119187&response_type=token&redirect_uri=https%3A%2F%2Frafaguild4-pixel.github.io%2Fcalculadoracbn%2F&scope=identify" class="btn-login">
-        🔓 LOGIN VIA DISCORD
-    </a>
+    <div class="box-login">
+        <h1 style="font-size: 32px; margin: 0;">POLÍCIA CIVIL</h1>
+        <h2 style="color: var(--accent-color); margin-top: 5px; font-size: 15px; letter-spacing: 2px;">ESTADO DE SAN ANDREAS</h2>
+        <p style="opacity: 0.7; margin-bottom: 20px; font-size: 14px;">Autentique-se com sua conta do Discord para acessar o painel.</p>
+        <a href="https://discord.com/oauth2/authorize?client_id=1482774609685119187&response_type=token&redirect_uri=https%3A%2F%2Frafaguild4-pixel.github.io%2Fformulariopoliciacivil%2F&scope=identify" class="btn-login">
+            🔓 LOGIN VIA DISCORD
+        </a>
+    </div>
 </div>
 
-<div style="display: flex; flex-direction: column; align-items: center;">
-    
-    <div id="user-bar">
-        <div class="user-info">
-            <img id="user-avatar" class="user-avatar" src="" alt="">
-            <span>Agente Logado: <strong id="user-name">...</strong></span>
+<div id="main-app">
+    <header>
+        <div class="logo-area">
+            <img src="https://i.imgur.com/SUA_LOGO_AQUI.png" alt="Logo">
+            <span>POLÍCIA CIVIL — SAN ANDREAS</span>
         </div>
-        <button onclick="logout()" style="background:#ff4757; border:none; color:white; border-radius:5px; cursor:pointer; padding:5px 10px; font-size:11px; font-weight:bold;">SAIR</button>
+        <div class="nav-links">
+            <a onclick="mostrarHome()" class="active">INÍCIO</a>
+            <a onclick="mostrarHome()">INSTITUCIONAL</a>
+            <a onclick="mostrarHome()">LEGISLAÇÃO</a>
+            <a onclick="abrirCalculadora()">FORMULÁRIO / B.O.</a>
+            <a onclick="logout()" style="color: #ff4757;">SAIR</a>
+        </div>
+    </header>
+
+    <div id="view-home" class="wrapper">
+        <div>
+            <div class="hero-section">
+                <h2>POLÍCIA CIVIL - ESTADO DE SAN ANDREAS</h2>
+                <h1>INVESTIGAÇÃO, RIGOR E JUSTIÇA</h1>
+                <p>Sistema oficial unificado de investigações, registros de ocorrências e controle interno da corporação.</p>
+                <button class="btn-action-main" onclick="abrirCalculadora()">ABRIR FORMULÁRIO / B.O.</button>
+            </div>
+
+            <div class="cards-grid">
+                <div class="card-item" onclick="alert('Área institucional em breve.')">
+                    <h3>📋 Inscrições</h3>
+                    <p>Inscrições abertas para novos recrutanentos e testes operacionais.</p>
+                </div>
+                <div class="card-item" onclick="abrirCalculadora()">
+                    <h3>⚖️ Registro de Ocorrência & B.O.</h3>
+                    <p>Preencha formulários de ocorrências e envie direto para o banco de dados.</p>
+                </div>
+                <div class="card-item" onclick="alert('Consulte o comando.')">
+                    <h3>👤 Pedir Set / Solicitação</h3>
+                    <p>Solicitações de cargos, alterações de patentes e divisões.</p>
+                </div>
+                <div class="card-item" onclick="window.open('https://discord.com', '_blank')">
+                    <h3>🎧 Ouvidoria & Suporte</h3>
+                    <p>Canal aberto para denúncias internas e ouvidoria civil.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-right">
+            <h3>Área do Policial</h3>
+            <div style="display: flex; align-items: center; gap: 10px; margin: 15px 0;">
+                <img id="user-avatar" style="width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--discord-color);" src="" alt="">
+                <div>
+                    <div style="font-size: 11px; color: #94a3b8;">POLICIAL LOGADO</div>
+                    <strong id="user-name" style="font-size: 14px;">...</strong>
+                </div>
+            </div>
+            <div class="agent-info-row">Patente: <strong>Inspetor / Agente</strong></div>
+            <div class="agent-info-row">Divisão: <strong>D.H.P.P</strong></div>
+
+            <div class="quick-links">
+                <h4>Quick Links</h4>
+                <a class="quick-link-item" onclick="abrirCalculadora()">• Novo Registro de B.O.</a>
+                <a class="quick-link-item" onclick="logout()">• Desconectar Sessão</a>
+            </div>
+        </div>
     </div>
 
-    <div class="main-container" id="main-app">
-        
-        <div class="ficha-branca">
-            <h1>
-                <img src="https://i.imgur.com/SUA_LOGO_AQUI.png" class="logo-img" alt="Logo"> 
-                Polícia Civil - B.O. / Formulário
-            </h1>
-            <div class="linha-divisora"></div>
+    <div id="view-calculadora">
+        <div style="display: flex; width: 100%;">
+            <div class="ficha-branca">
+                <button class="btn-voltar" onclick="mostrarHome()">← Voltar ao Início</button>
+                <h1>
+                    <img src="https://i.imgur.com/SUA_LOGO_AQUI.png" style="width: 35px; height: 35px;" alt="Logo"> 
+                    Polícia Civil - Registro de Ocorrência
+                </h1>
+                <div class="linha-divisora"></div>
 
-            <div class="info-linha">📅 Data: <input type="text" id="inData" class="input-campo"> 🕒 Hora: <input type="text" id="inHora" class="input-campo"></div>
-            
-            <div class="info-linha">
-                👮‍♂️ Oficial Responsável<span class="obrigatorio">*</span>: <input type="text" id="inPrisaoPor" class="input-campo"> 
-                🆔 ID<span class="obrigatorio">*</span>: <input type="text" id="idPolicial" class="input-campo" style="max-width: 60px;">
-            </div>
-
-            <div class="info-linha">
-                🏢 Divisão: 
-                <select id="inUnidade" class="select-campo">
-                    <option value="D.H.P.P">D.H.P.P</option>
-                    <option value="Investigação">Investigação</option>
-                    <option value="Operações Especiais">Operações Especiais</option>
-                    <option value="Plantão">Plantão</option>
-                </select>
-            </div>
-
-            <div class="info-linha">
-                ⚖️ Advogado Presente: <input type="text" id="inAdvogado" class="input-campo" placeholder="Nome do Advogado (Opcional)"> 
-                🆔 ID: <input type="text" id="idAdvogado" class="input-campo" style="max-width: 80px;">
-            </div>
-            
-            <div style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px;">
-                <div class="info-linha">👤 Cidadão Envolvido / Suspeito<span class="obrigatorio">*</span>: <input type="text" id="inNome" class="input-campo"> 🆔 ID<span class="obrigatorio">*</span>: <input type="text" id="inPass" class="input-campo" style="max-width: 80px;"></div>
+                <div class="info-linha">📅 Data: <input type="text" id="inData" class="input-campo"> 🕒 Hora: <input type="text" id="inHora" class="input-campo"></div>
                 
-                <label style="font-size: 13px; font-weight: bold; margin-top: 10px; display: block;">📝 Relatório / Descrição dos Fatos:</label>
-                <textarea id="inRelatorio" class="textarea-relatorio" rows="6" placeholder="Descreva detalhadamente a ocorrência, provas coletadas e depoimentos..."></textarea>
-            </div>
-        </div>
+                <div class="info-linha">
+                    👮‍♂️ Oficial Responsável*: <input type="text" id="inPrisaoPor" class="input-campo"> 
+                    🆔 ID*: <input type="text" id="idPolicial" class="input-campo" style="max-width: 60px;">
+                </div>
 
-        <div class="painel-direito">
-            <img src="https://i.imgur.com/SEU_BANNER_AQUI.png" class="banner-preview" alt="Banner Policia Civil">
+                <div class="info-linha">
+                    🏢 Divisão: 
+                    <select id="inUnidade" class="select-campo">
+                        <option value="D.H.P.P">D.H.P.P</option>
+                        <option value="Investigação">Investigação</option>
+                        <option value="Operações Especiais">Operações Especiais</option>
+                        <option value="Plantão">Plantão</option>
+                    </select>
+                </div>
 
-            <div class="box-atenuantes">
-                <h3>📌 Informações Adicionais</h3>
-                <p style="font-size: 12px; color: #9ca3af; line-height: 1.4;">
-                    Preencha todos os campos obrigatórios (*). Ao clicar em <b>"Enviar Ocorrência"</b>, o relatório será gerado de forma oficial e enviado diretamente para o canal do Discord configurado via Webhook.
-                </p>
-            </div>
-            
-            <div class="container-botoes-acao" style="margin-top: auto;">
-                <button class="btn-acao btn-enviar" onclick="enviarWebhook()">Enviar Ocorrência</button>
+                <div class="info-linha">
+                    ⚖️ Advogado Presente: <input type="text" id="inAdvogado" class="input-campo" placeholder="Nome (Opcional)"> 
+                    🆔 ID: <input type="text" id="idAdvogado" class="input-campo" style="max-width: 80px;">
+                </div>
+                
+                <div style="margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px;">
+                    <div class="info-linha">👤 Cidadão / Suspeito*: <input type="text" id="inNome" class="input-campo"> 🆔 ID*: <input type="text" id="inPass" class="input-campo" style="max-width: 80px;"></div>
+                    
+                    <label style="font-size: 13px; font-weight: bold; margin-top: 10px; display: block;">📝 Relatório / Descrição dos Fatos:</label>
+                    <textarea id="inRelatorio" class="textarea-relatorio" rows="6" placeholder="Descreva detalhadamente a ocorrência..."></textarea>
+                </div>
             </div>
 
-            <button class="btn-acao" style="background: #374151; color: white; height: 40px; font-size: 12px; flex: none;" onclick="location.reload()">Limpar Formulário</button>
+            <div class="painel-direito-calc">
+                <img src="https://i.imgur.com/SEU_BANNER_AQUI.png" style="width: 100%; height: 120px; border-radius: 8px; object-fit: cover; border: 1px solid #374151;" alt="Banner">
+                
+                <div style="background: #1f2937; padding: 15px; border-radius: 8px; font-size: 12px; color: #9ca3af; line-height: 1.4;">
+                    Preencha os campos obrigatórios e clique no botão abaixo para despachar o relatório oficial diretamente para o canal do Discord via Webhook.
+                </div>
+
+                <button style="background: #27ae60; color: white; border: none; border-radius: 8px; height: 50px; font-weight: bold; cursor: pointer; margin-top: auto;" onclick="enviarWebhook()">Enviar Ocorrência</button>
+                <button style="background: #374151; color: white; border: none; border-radius: 8px; height: 40px; font-weight: bold; cursor: pointer;" onclick="mostrarHome()">Cancelar</button>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    // ⚠️ COLOQUE SEU WEBHOOK DO DISCORD ABAIXO ENTRE AS ASPAS
+    // ⚠️ COLOQUE SEU WEBHOOK DO DISCORD ABAIXO
     const WEBHOOK_URL = "SEU_WEBHOOK_DO_DISCORD_AQUI"; 
 
     function checkLogin() {
@@ -185,8 +305,7 @@
             .then(res => res.json())
             .then(user => {
                 document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('main-app').style.display = 'flex';
-                document.getElementById('user-bar').style.display = 'flex';
+                document.getElementById('main-app').style.display = 'block';
                 document.getElementById('user-name').innerText = user.username;
                 document.getElementById('user-avatar').src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
                 
@@ -197,6 +316,16 @@
     }
 
     function logout() { window.location.hash = ""; window.location.reload(); }
+
+    function abrirCalculadora() {
+        document.getElementById('view-home').style.display = 'none';
+        document.getElementById('view-calculadora').style.display = 'block';
+    }
+
+    function mostrarHome() {
+        document.getElementById('view-calculadora').style.display = 'none';
+        document.getElementById('view-home').style.display = 'grid';
+    }
 
     function atualizarDataHora() {
         const agora = new Date();
@@ -217,14 +346,14 @@
         const relatorio = document.getElementById('inRelatorio').value;
 
         if (!policial || !idPolicial || !cidadao || !idCidadao || !relatorio) {
-            alert("Por favor, preencha todos os campos obrigatórios (*)!");
+            alert("Por favor, preencha todos os campos obrigatórios (*)");
             return;
         }
 
         const payload = {
             embeds: [{
                 title: "🏛️ POLÍCIA CIVIL - REGISTRO DE OCORRÊNCIA",
-                color: 39423, // Cor azulada estilo polícia
+                color: 39423,
                 fields: [
                     { name: "📅 Data / Hora", value: `${data} às ${hora}`, inline: true },
                     { name: "🏢 Divisão", value: unidade, inline: true },
@@ -234,7 +363,7 @@
                     { name: "📝 Relatório dos Fatos", value: relatorio, inline: false }
                 ],
                 footer: {
-                    text: `Registrado por ${window.discordUser ? window.discordUser.username : 'Sistema Policial'}`,
+                    text: `Registrado por ${window.discordUser ? window.discordUser.username : 'Sistema'}`,
                     icon_url: window.discordUser ? `https://cdn.discordapp.com/avatars/${window.discordUser.id}/${window.discordUser.avatar}.png` : ""
                 },
                 timestamp: new Date().toISOString()
@@ -248,16 +377,13 @@
         })
         .then(res => {
             if (res.ok) {
-                alert("Ocorrência enviada com sucesso para o Discord!");
-                location.reload();
+                alert("Ocorrência enviada com sucesso!");
+                mostrarHome();
             } else {
-                alert("Erro ao enviar o webhook. Verifique se a URL do Webhook está correta.");
+                alert("Erro ao enviar o webhook.");
             }
         })
-        .catch(err => {
-            console.error(err);
-            alert("Erro de conexão ao tentar enviar o webhook.");
-        });
+        .catch(() => alert("Erro de conexão."));
     }
 </script>
 </body>
