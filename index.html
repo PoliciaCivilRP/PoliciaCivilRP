@@ -673,6 +673,7 @@
     // ⚠️ CONFIGURAÇÃO DOS WEBHOOKS DO DISCORD (COLOQUE SEUS LINKS AQUI)
     const WEBHOOK_BO = "URL_DO_WEBHOOK_DE_BO_AQUI"; 
     const WEBHOOK_SET = "URL_DO_WEBHOOK_DE_PEDIR_SET_AQUI";
+    const WEBHOOK_PORTE = "URL_DO_WEBHOOK_DE_PEDIR_SET_AQUI";
 
     function checkLogin() {
         const fragment = new URLSearchParams(window.location.hash.slice(1));
@@ -897,21 +898,28 @@
         return;
     }
 
-    const payload = {
-        embeds: [{
-            title: "🔫 NOVO CERTIFICADO DE PORTE DE ARMAS EMITIDO",
-            color: 16711680,
-            fields: [
-                { name: "👤 Requerente", value: nome, inline: true },
-                { name: "📄 Passaporte / RG", value: rg, inline: true },
-                { name: "🏷️ Tipo de Porte", value: tipo, inline: false },
-                { name: "📝 Parecer Técnico", value: parecer || "Aprovado sem restrições.", inline: false }
-            ],
-            timestamp: new Date().toISOString()
-        }]
-    };
+    
 
-    fetch(WEBHOOK_PORTE, {
+            const payload = {
+            embeds: [{
+                title: "🔫 NOVO CERTIFICADO DE PORTE DE ARMAS EMITIDO",
+                color: 39423,
+                fields: [
+                    { name: "👤 Requerente", value: nome, inline: true },
+                    { name: "📄 Passaporte / RG", value: rg, inline: true },
+                    { name: "🏷️ Tipo de Porte", value: tipo, inline: false },
+                    { name: "📝 Parecer Técnico", value: parecer || "Aprovado sem restrições.", inline: false }
+                ],
+                footer: {
+                    text: `Registrado por ${window.discordUser ? window.discordUser.username : 'Sistema'}`,
+                    icon_url: window.discordUser ? `https://cdn.discordapp.com/avatars/${window.discordUser.id}/${window.discordUser.avatar}.png` : ""
+                },
+                timestamp: new Date().toISOString()
+            }]
+        };
+
+
+        fetch(WEBHOOK_PORTE, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
