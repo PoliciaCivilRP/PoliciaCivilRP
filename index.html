@@ -834,6 +834,11 @@
         })
         .catch(() => alert("Erro de conexão."))
     }
+    function abrirFormularioPorte() {
+       esconderTudo();
+       document.getElementById('view-porte').style.display = 'block';
+       document.getElementById('nav-porte').classList.add('active');
+    }
 </script>
 </body>
 </html>
