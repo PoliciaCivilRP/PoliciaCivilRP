@@ -271,11 +271,11 @@
 </div>
 
 <script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyXSVN7wlFxF17RCKXnpO9LNCMzPqX4iiEKqErlDaVMFCvvOr4Z-onb9-JPL8ybHrA6Vg/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMcSPdW4yKILqgpVWMpQuCk1VMRflhspf9FcvKaybo2HYgcDh2kGN2e0vI-VLfUFgH4g/exec";
     
     // Insira os Webhooks do Discord aqui:
-    const WEBHOOK_PORTE_URL = "https://discord.com/api/webhooks/1543373625938280520/ImOpr8m83rIFVfmXp_j_J43yTWJL00vxkuh3MtwSQf3kVUYm4MjZjfpBIMZ7dbnyyvdj";
-    const WEBHOOK_SET_URL = "https://discord.com/api/webhooks/1543373625938280520/ImOpr8m83rIFVfmXp_j_J43yTWJL00vxkuh3MtwSQf3kVUYm4MjZjfpBIMZ7dbnyyvdj";
+    const WEBHOOK_PORTE_URL = "";
+    const WEBHOOK_SET_URL = "";
 
     const DISCORD_CLIENT_ID = "1482774609685119187";
     const REDIRECT_URI = encodeURIComponent(window.location.origin + window.location.pathname);
@@ -462,84 +462,83 @@
 
     // Envio do Relatório de Porte de Arma (Otimizado com dados no content e title para busca rápida no Discord)
     async function enviarPorteArma() {
-        const errorBox = document.getElementById('porte-error');
-        const successBox = document.getElementById('porte-success');
-        errorBox.style.display = 'none';
-        successBox.style.display = 'none';
+    const errorBox = document.getElementById('porte-error');
+    const successBox = document.getElementById('porte-success');
+    errorBox.style.display = 'none';
+    successBox.style.display = 'none';
 
-        const cargoAtual = usuarioAtualDados.cargo;
-        if (cargoAtual !== "Delegado Adjunto" && cargoAtual !== "Delegado" && cargoAtual !== "Administrador Geral") {
-            errorBox.innerText = "Erro: Apenas Delegado Adjunto, Delegado e Administrador Geral podem emitir porte de arma.";
-            errorBox.style.display = 'block';
-            return;
-        }
-
-        const nome = document.getElementById('porte-nome').value.trim();
-        const passaporte = document.getElementById('porte-passaporte').value.trim();
-        const placas = document.getElementById('porte-placas').value.trim();
-        const policial = document.getElementById('porte-policial').value.trim();
-        const datahora = document.getElementById('porte-datahora').value.trim();
-
-        if (!nome || !passaporte || !placas || !policial || !datahora) {
-            errorBox.innerText = "Preencha todos os campos do formulário de porte de arma.";
-            errorBox.style.display = 'block';
-            return;
-        }
-
-        if (WEBHOOK_PORTE_URL.includes("COLE_AQUI")) {
-            errorBox.innerText = "Erro de configuração: Webhook do Porte de Arma não configurado.";
-            errorBox.style.display = 'block';
-            return;
-        }
-
-        successBox.innerText = "Enviando relatório para o Discord...";
-        successBox.style.display = 'block';
-
-        const discordIdPolicial = discordUserGlobal ? discordUserGlobal.id : "";
-        const mencaoPolicial = discordIdPolicial ? `<@${discordIdPolicial}>` : policial;
-
-        // O texto inicial (content) agora contém o nome e o passaporte explicitamente para a busca do Discord indexar
-        const payload = {
-            content: `🔫 **Porte de Arma Emitido** | Solicitante: **${nome}** | Passaporte/ID: **${passaporte}** | Placas: **${placas}** | Data e Hora: **${datahora}**| Responsável: ${mencaoPolicial}`,
-            embeds: [{
-                title: `Porte de Arma: ${nome} (ID: ${passaporte})`,
-                color: 16766720,
-                description: `Registro indexado para busca rápida por nome, passaporte ou placa.`,
-                fields: [
-                    { name: "Nome do Solicitante", value: nome, inline: true },
-                    { name: "Passaporte (ID)", value: passaporte, inline: true },
-                    { name: "Placas de Veículos", value: placas, inline: false },
-                    { name: "Policial Responsável", value: `${policial} (${mencaoPolicial})`, inline: true },
-                    { name: "Data e Hora", value: datahora, inline: true }
-                ],
-                timestamp: new Date().toISOString()
-            }]
-        };
-
-        try {
-            const res = await fetch(WEBHOOK_PORTE_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            if (res.ok || res.status === 204) {
-                successBox.innerText = "Relatório de porte de arma enviado com sucesso!";
-                document.getElementById('porte-nome').value = "";
-                document.getElementById('porte-passaporte').value = "";
-                document.getElementById('porte-placas').value = "";
-                document.getElementById('porte-datahora').value = "";
-            } else {
-                successBox.style.display = 'none';
-                errorBox.innerText = "Erro ao enviar via webhook do Discord.";
-                errorBox.style.display = 'block';
-            }
-        } catch (err) {
-            successBox.style.display = 'none';
-            errorBox.innerText = "Falha de conexão com o webhook.";
-            errorBox.style.display = 'block';
-        }
+    const cargoAtual = usuarioAtualDados.cargo;
+    if (cargoAtual !== "Delegado Adjunto" && cargoAtual !== "Delegado" && cargoAtual !== "Administrador Geral") {
+        errorBox.innerText = "Erro: Apenas Delegado Adjunto, Delegado e Administrador Geral podem emitir porte de arma.";
+        errorBox.style.display = 'block';
+        return;
     }
+
+    const nome = document.getElementById('porte-nome').value.trim();
+    const passaporte = document.getElementById('porte-passaporte').value.trim();
+    const placas = document.getElementById('porte-placas').value.trim();
+    const policial = document.getElementById('porte-policial').value.trim();
+    const datahora = document.getElementById('porte-datahora').value.trim();
+
+    if (!nome || !passaporte || !placas || !policial || !datahora) {
+        errorBox.innerText = "Preencha todos os campos do formulário de porte de arma.";
+        errorBox.style.display = 'block';
+        return;
+    }
+
+    successBox.innerText = "Enviando relatório de forma segura...";
+    successBox.style.display = 'block';
+
+    const discordIdPolicial = discordUserGlobal ? discordUserGlobal.id : "";
+    const mencaoPolicial = discordIdPolicial ? `<@${discordIdPolicial}>` : policial;
+
+    // Monta o payload do Discord que será processado no Back-end do Google
+    const payloadDiscord = {
+        content: `🔫 **Porte de Arma Emitido** | Solicitante: **${nome}** | Passaporte/ID: **${passaporte}** | Placas: **${placas}** | Responsável: ${mencaoPolicial}`,
+        embeds: [{
+            title: `Porte de Arma: ${nome} (ID: ${passaporte})`,
+            color: 16766720,
+            description: `Registro indexado para busca rápida por nome, passaporte ou placa.`,
+            fields: [
+                { name: "Nome do Solicitante", value: nome, inline: true },
+                { name: "Passaporte (ID)", value: passaporte, inline: true },
+                { name: "Placas de Veículos", value: placas, inline: false },
+                { name: "Policial Responsável", value: `${policial} (${mencaoPolicial})`, inline: true },
+                { name: "Data e Hora", value: datahora, inline: true }
+            ],
+            timestamp: new Date().toISOString()
+        }]
+    };
+
+    try {
+        const res = await fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+                action: 'enviar_porte',
+                usuarioLogado: sessionStorage.getItem('usuario_logado'),
+                payloadDiscord: payloadDiscord
+            })
+        });
+        
+        const resultado = await res.json();
+
+        if (resultado.status === 'sucesso') {
+            successBox.innerText = "Relatório de porte de arma enviado com sucesso!";
+            document.getElementById('porte-nome').value = "";
+            document.getElementById('porte-passaporte').value = "";
+            document.getElementById('porte-placas').value = "";
+            document.getElementById('porte-datahora').value = "";
+        } else {
+            successBox.style.display = 'none';
+            errorBox.innerText = resultado.mensagem || "Erro ao enviar relatório.";
+            errorBox.style.display = 'block';
+        }
+    } catch (err) {
+        successBox.style.display = 'none';
+        errorBox.innerText = "Falha de conexão com o servidor.";
+        errorBox.style.display = 'block';
+    }
+ }
 
     // Envio do Relatório de Pedir Set (Otimizado com dados no content e title para busca rápida no Discord)
     async function enviarPedirSet() {
