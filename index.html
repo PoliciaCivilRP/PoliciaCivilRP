@@ -161,8 +161,9 @@
                 <div class="input-login-group">
                     <label>Novo Cargo</label>
                     <select id="admin-novo-cargo">
-                        <option value="Visitante">Visitante</option>
-                        <option value="Administrativo">Administrativo</option>
+                        <option value="Acadepol">Visitante</option>
+                        <option value="Agente">Visitante</option>
+                        <option value="Investigador">Visitante</option>
                         <option value="Delegado Adjunto">Delegado Adjunto</option>
                         <option value="Delegado">Delegado</option>
                         <option value="Administrador Geral">Administrador Geral</option>
@@ -327,7 +328,7 @@
         `;
 
         // Se for Delegado ou Administrador Geral, libera o painel administrativo na sidebar
-        if (cargo === "Delegado" || cargo === "Administrador Geral") {
+        if (cargo === "Delegado" || cargo === "Delegado Adjunto" || cargo === "Administrador Geral") {
             document.getElementById('painel-gerenciamento').style.display = 'block';
             popularSelectUsuarios();
         }
