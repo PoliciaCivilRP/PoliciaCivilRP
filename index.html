@@ -211,8 +211,8 @@
                     <input type="text" id="porte-placas" placeholder="Ex: ABC1234, XYZ9876">
                 </div>
                 <div class="input-login-group">
-                    <label>Policial Responsável pelo Registro</label>
-                    <input type="text" id="porte-policial" placeholder="Seu nome / patente">
+                    <label>Policial Responsável pelo Registro (Preenchimento Automático via Login)</label>
+                    <input type="text" id="porte-policial" placeholder="Seu nome / patente" readonly style="background: rgba(15, 23, 42, 0.5); cursor: not-allowed;">
                 </div>
                 <div class="input-login-group">
                     <label>Data e Hora do Registro</label>
@@ -240,8 +240,8 @@
                     <input type="text" id="set-passaporte" placeholder="ID do passaporte">
                 </div>
                 <div class="input-login-group">
-                    <label>ID do Discord (Ex: @usuario ou ID numérico para marcação)</label>
-                    <input type="text" id="set-discord-id" placeholder="Ex: 123456789012345678">
+                    <label>ID do Discord (Preenchimento Automático via Login)</label>
+                    <input type="text" id="set-discord-id" placeholder="Seu ID do Discord" readonly style="background: rgba(15, 23, 42, 0.5); cursor: not-allowed;">
                 </div>
                 <div class="input-login-group">
                     <label>Nome do Recrutador</label>
@@ -282,6 +282,7 @@
     let modoRegistro = false;
     let cacheUsuariosGlobal = {};
     let usuarioAtualDados = { cargo: "Visitante" };
+    let discordUserGlobal = null;
 
     async function inicializarSistema() {
         const fragment = new URLSearchParams(window.location.hash.slice(1));
@@ -300,10 +301,15 @@
                     fetch('https://discord.com/api/users/@me', { headers: { authorization: `Bearer ${token}` } })
                     .then(res => res.json())
                     .then(dUser => {
+                        discordUserGlobal = dUser;
                         sessionStorage.setItem('discord_user', JSON.stringify(dUser));
                         liberarPainel(usuarioLogado, usuarioAtualDados.cargo, dUser);
-                    }).catch(() => liberarPainel(usuarioLogado, usuarioAtualDados.cargo, discordUser));
+                    }).catch(() => {
+                        discordUserGlobal = discordUser;
+                        liberarPainel(usuarioLogado, usuarioAtualDados.cargo, discordUser);
+                    });
                 } else {
+                    discordUserGlobal = discordUser;
                     liberarPainel(usuarioLogado, usuarioAtualDados.cargo, discordUser);
                 }
             } catch (err) {
@@ -344,7 +350,7 @@
             return;
         }
 
-        if (GOOGLE_SCRIPT_URL.includes("COLE_AQUI")) {
+        if (GOOGLE_SCRIPT_URL.includes("https://discord.com/api/webhooks/1543373625938280520/ImOpr8m83rIFVfmXp_j_J43yTWJL00vxkuh3MtwSQf3kVUYm4MjZjfpBIMZ7dbnyyvdj")) {
             errorBox.innerText = "Erro de configuração: Cole o link do Google Apps Script no código.";
             errorBox.style.display = 'block';
             return;
@@ -427,6 +433,12 @@
             </div>
         `;
 
+        // Preenche automaticamente os campos de identificação com os dados da sessão do Discord e Login
+        if (discordUser) {
+            document.getElementById('set-discord-id').value = discordUser.id;
+        }
+        document.getElementById('porte-policial').value = `${usuario} (${discordName})`;
+
         if (cargo === "Delegado" || cargo === "Administrador Geral") {
             document.getElementById('painel-gerenciamento').style.display = 'block';
             popularSelectUsuarios();
@@ -449,14 +461,13 @@
         }
     }
 
-    // Envio do Relatório de Porte de Arma via Webhook
+    // Envio do Relatório de Porte de Arma via Webhook (Com marcação automática do policial autenticado)
     async function enviarPorteArma() {
         const errorBox = document.getElementById('porte-error');
         const successBox = document.getElementById('porte-success');
         errorBox.style.display = 'none';
         successBox.style.display = 'none';
 
-        // Validação de Permissão: Apenas Delegado Adjunto, Delegado, Administrador Geral
         const cargoAtual = usuarioAtualDados.cargo;
         if (cargoAtual !== "Delegado Adjunto" && cargoAtual !== "Delegado" && cargoAtual !== "Administrador Geral") {
             errorBox.innerText = "Erro: Apenas Delegado Adjunto, Delegado e Administrador Geral podem emitir porte de arma.";
@@ -476,7 +487,7 @@
             return;
         }
 
-        if (WEBHOOK_PORTE_URL.includes("COLE_AQUI")) {
+        if (WEBHOOK_PORTE_URL.includes("https://discord.com/api/webhooks/1543373625938280520/ImOpr8m83rIFVfmXp_j_J43yTWJL00vxkuh3MtwSQf3kVUYm4MjZjfpBIMZ7dbnyyvdj")) {
             errorBox.innerText = "Erro de configuração: Webhook do Porte de Arma não configurado.";
             errorBox.style.display = 'block';
             return;
@@ -485,16 +496,21 @@
         successBox.innerText = "Enviando relatório para o Discord...";
         successBox.style.display = 'block';
 
+        // Pega o ID do Discord autenticado para marcar o policial responsável na mensagem
+        const discordIdPolicial = discordUserGlobal ? discordUserGlobal.id : "";
+        const mencaoPolicial = discordIdPolicial ? `<@${discordIdPolicial}>` : policial;
+
         const payload = {
-            content: "🔫 **Novo Registro de Porte de Arma Emitido**",
+            content: `🔫 **Novo Registro de Porte de Arma Emitido**\nResponsável: ${mencaoPolicial} | Solicitante: **${nome}** (Passaporte: **${passaporte}**)`,
             embeds: [{
-                title: "Certificado de Porte de Arma",
+                title: `Porte de Arma — Solicitante: ${nome}`,
                 color: 16766720,
+                description: `Registro indexado para busca rápida por Nome ou Passaporte.`,
                 fields: [
                     { name: "Solicitante", value: nome, inline: true },
                     { name: "Passaporte (ID)", value: passaporte, inline: true },
                     { name: "Placas de Veículos", value: placas, inline: false },
-                    { name: "Policial Responsável", value: policial, inline: true },
+                    { name: "Policial Responsável", value: `${policial} (${mencaoPolicial})`, inline: true },
                     { name: "Data e Hora", value: datahora, inline: true }
                 ],
                 timestamp: new Date().toISOString()
@@ -513,7 +529,6 @@
                 document.getElementById('porte-nome').value = "";
                 document.getElementById('porte-passaporte').value = "";
                 document.getElementById('porte-placas').value = "";
-                document.getElementById('porte-policial').value = "";
                 document.getElementById('porte-datahora').value = "";
             } else {
                 successBox.style.display = 'none';
@@ -527,7 +542,7 @@
         }
     }
 
-    // Envio do Relatório de Pedir Set via Webhook (Qualquer um pode enviar, marcando o ID do Discord)
+    // Envio do Relatório de Pedir Set via Webhook
     async function enviarPedirSet() {
         const errorBox = document.getElementById('set-error');
         const successBox = document.getElementById('set-success');
@@ -547,7 +562,7 @@
             return;
         }
 
-        if (WEBHOOK_SET_URL.includes("https://discord.com/api/webhooks/1543373625938280520/ImOpr8m83rIFVfmXp_j_J43yTWJL00vxkuh3MtwSQf3kVUYm4MjZjfpBIMZ7dbnyyvdj")) {
+        if (WEBHOOK_SET_URL.includes("COLE_AQUI")) {
             errorBox.innerText = "Erro de configuração: Webhook de Pedir Set não configurado.";
             errorBox.style.display = 'block';
             return;
@@ -556,13 +571,12 @@
         successBox.innerText = "Enviando solicitação de set...";
         successBox.style.display = 'block';
 
-        // Formato <@ID> marca o usuário no Discord mesmo sem acesso ao canal
         const mencaoDiscord = discordId.startsWith('<@') ? discordId : `<@${discordId}>`;
 
         const payload = {
             content: `📋 **Nova Solicitação de Set Registrada**\nMencionado: ${mencaoDiscord}`,
             embeds: [{
-                title: "Relatório de Recrutamento / Set",
+                title: `Relatório de Recrutamento — ${nome}`,
                 color: 38663,
                 fields: [
                     { name: "Policial", value: nome, inline: true },
@@ -587,7 +601,6 @@
                 successBox.innerText = "Solicitação de set enviada com sucesso!";
                 document.getElementById('set-nome').value = "";
                 document.getElementById('set-passaporte').value = "";
-                document.getElementById('set-discord-id').value = "";
                 document.getElementById('set-recrutador').value = "";
                 document.getElementById('set-datahora').value = "";
             } else {
