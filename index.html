@@ -155,7 +155,7 @@
 
 <script>
     // Cole aqui embaixo o URL que o Google Apps Script gerou para você:
-    const GOOGLE_SCRIPT_URL = "COLE_AQUI_O_LINK_DO_WEB_APP_DO_GOOGLE";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwjwL1IxVs9mcYWoMyHxXh7dRrYq2IR6hHSuUBAjVd5zOo4US2IfBHP3kPn_fWkX-CBoA/exec";
     
     const DISCORD_CLIENT_ID = "1482774609685119187";
     const REDIRECT_URI = encodeURIComponent(window.location.origin + window.location.pathname);
@@ -163,7 +163,7 @@
 
     async function carregarBaseUsuarios() {
         try {
-            const resposta = await fetch(https://script.google.com/macros/s/AKfycbwjwL1IxVs9mcYWoMyHxXh7dRrYq2IR6hHSuUBAjVd5zOo4US2IfBHP3kPn_fWkX-CBoA/exec);
+            const resposta = await fetch(GOOGLE_SCRIPT_URL);
             return await resposta.json();
         } catch (e) {
             return {};
