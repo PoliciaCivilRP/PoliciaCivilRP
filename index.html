@@ -55,6 +55,35 @@
             </div>
         </div>
 
+
+        function checkLogin() {
+            const usuarioLogado = localStorage.getItem('usuario_logado');
+            const cargoUsuario = localStorage.getItem('cargo_usuario');
+
+            if (usuarioLogado) {
+                // Esconde a tela de login e mostra o sistema principal
+               document.getElementById('login-screen').style.display = 'none';
+        
+                // Se você tiver um container principal envolvendo o app, ajuste o ID abaixo se necessário:
+                const mainApp = document.getElementById('main-app');
+                if (mainApp) mainApp.style.display = 'block';
+        
+                console.log(`Sessão ativa: ${usuarioLogado} (${cargoUsuario})`);
+            } else {
+                document.getElementById('login-screen').style.display = 'flex';
+                const mainApp = document.getElementById('main-app');
+                if (mainApp) mainApp.style.display = 'none';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('usuario_logado');
+            localStorage.removeItem('cargo_usuario');
+            location.reload();
+        }
+
+
+        
         /* SISTEMA PRINCIPAL */
         #main-app { display: none; }
 
