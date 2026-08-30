@@ -358,7 +358,6 @@
             <a onclick="mostrarHome()" class="active" id="nav-home">INÍCIO</a>
             <a onclick="abrirInstitucional()" id="nav-inst">INSTITUCIONAL</a>
             <a onclick="mostrarHome()">LEGISLAÇÃO</a>
-            <a onclick="abrirFormularioPorte()" id="nav-porte">PORTE DE ARMAS</a>            
             <a onclick="abrirFormularioBO()" id="nav-bo">FORMULÁRIO / B.O.</a>
             <a onclick="abrirFormularioSet()" id="nav-set">PEDIR SET</a>
             <!-- 🔗 COLOQUE O LINK DO DISCORD ABAIXO -->
@@ -658,15 +657,12 @@
         document.getElementById('view-institucional').style.display = 'none';
         document.getElementById('view-bo').style.display = 'none';
         document.getElementById('view-set').style.display = 'none';
-        document.getElementById('view-porte').style.display = 'none'; // <-- ADICIONAR ISSO
-        document.getElementById('view-set').style.display = 'none';
         
         // Remove active de todos do menu
         document.getElementById('nav-home').classList.remove('active');
         document.getElementById('nav-inst').classList.remove('active');
         document.getElementById('nav-bo').classList.remove('active');
         document.getElementById('nav-set').classList.remove('active');
-        document.getElementById('nav-porte').classList.remove('active');
     }
 
     function mostrarHome() {
@@ -836,12 +832,6 @@
             }
         })
         .catch(() => alert("Erro de conexão."))
-    }
-
-    function abrirFormularioPorte() {
-    esconderTudo();
-    document.getElementById('view-porte').style.display = 'block';
-    document.getElementById('nav-porte').classList.add('active');
     }
 </script>
 </body>
