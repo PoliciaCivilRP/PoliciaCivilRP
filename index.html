@@ -31,6 +31,79 @@
             background-image: radial-gradient(circle at 50% 0%, #111c33 0%, var(--bg-dark) 70%);
         }
 
+        /* TELA DE LOGIN INICIAL (USUÁRIO E SENHA) */
+        #auth-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .box-login {
+            max-width: 420px;
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 40px;
+            border-radius: 14px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+        .box-login h1 { font-size: 20px; margin-bottom: 5px; color: #fff; letter-spacing: 1px; }
+        .box-login h2 { font-size: 12px; color: var(--accent-gold); margin-bottom: 25px; letter-spacing: 2px; }
+        
+        .input-login-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+        .input-login-group label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .input-login-group input {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--border-subtle);
+            padding: 12px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-login-group input:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .btn-entrar {
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13.5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: opacity 0.2s;
+        }
+        .btn-entrar:hover { opacity: 0.9; }
+
+        .error-msg {
+            color: var(--accent-red);
+            font-size: 12px;
+            margin-top: 12px;
+            display: none;
+        }
+
+        /* APLICAÇÃO PRINCIPAL (INICIALMENTE OCULTA) */
+        #main-app { display: none; }
+
         /* HEADER / NAVBAR */
         header {
             background: rgba(11, 19, 43, 0.95);
@@ -136,7 +209,7 @@
         .card-item h3 { margin: 0 0 10px 0; font-size: 16px; display: flex; align-items: center; gap: 10px; color: #f8fafc; font-weight: 700; }
         .card-item p { margin: 0; font-size: 13px; color: var(--text-muted); line-height: 1.5; }
 
-        /* PAINEL DIREITO (STATUS DO ACESSO) */
+        /* PAINEL DIREITO */
         .sidebar-right {
             background: var(--bg-card);
             border-radius: 14px;
@@ -221,9 +294,30 @@
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
     </style>
 </head>
-<body onload="verificarRetornoDiscord()">
+<body onload="inicializarSistema()">
 
-<!-- APLICAÇÃO PRINCIPAL (JÁ ABRE DIRETO) -->
+<!-- TELA 1: LOGIN POR USUÁRIO E SENHA (BANCO DE DADOS / CREDENCIAIS) -->
+<div id="auth-screen">
+    <div class="box-login">
+        <h1>POLÍCIA CIVIL</h1>
+        <h2>ESTADO DE SAN ANDREAS</h2>
+        
+        <div class="input-login-group">
+            <label>Usuário / Identificação</label>
+            <input type="text" id="db-user" placeholder="Digite seu usuário">
+        </div>
+        
+        <div class="input-login-group">
+            <label>Senha</label>
+            <input type="password" id="db-pass" placeholder="••••••••">
+        </div>
+
+        <button class="btn-entrar" onclick="fazerLoginSistema()">ACESSAR PAINEL</button>
+        <div id="login-error" class="error-msg">Usuário ou senha incorretos.</div>
+    </div>
+</div>
+
+<!-- APLICAÇÃO PRINCIPAL (SÓ APARECE APÓS O LOGIN NO BANCO E AUTENTICAÇÃO DO DISCORD) -->
 <div id="main-app">
     <!-- HEADER -->
     <header>
@@ -237,6 +331,7 @@
             <a onclick="abrirFormularioBO()" id="nav-bo">FORMULÁRIO / B.O.</a>
             <a onclick="abrirFormularioSet()" id="nav-set">PEDIR SET</a>
             <a href="https://discord.gg/SEU_DISCORD_AQUI" target="_blank" style="color: #60a5fa;">DISCORD</a>
+            <a onclick="sairSistema()" style="color: #ff4757;">SAIR</a>
         </div>
     </header>
 
@@ -271,14 +366,12 @@
         </div>
 
         <div class="sidebar-right">
-            <h3>Status de Acesso</h3>
+            <h3>Credenciais do Agente</h3>
             <div style="display: flex; align-items: center; gap: 12px; margin: 15px 0;" id="user-status-box">
-                <div style="font-size: 13px; color: var(--text-muted);">
-                    Você está navegando como <strong style="color: var(--accent-gold);">Visitante</strong>. O login via Discord será solicitado apenas no momento do envio dos dados.
-                </div>
+                <!-- Informações injetadas via JavaScript -->
             </div>
-            <div class="agent-info-row" style="font-size: 12px; border-top: 1px solid var(--border-subtle); paddingTop: 12px;">
-                Novos usuários entram automaticamente como Visitantes até que a administração aprove as permissões de Delegado.
+            <div class="agent-info-row" style="font-size: 12px; border-top: 1px solid var(--border-subtle); padding-top: 12px;">
+                Usuários novos entram com cargo de <strong>Visitante</strong> até que a administração ajuste as permissões.
             </div>
         </div>
     </div>
@@ -322,7 +415,7 @@
                 </div>
             </div>
             <div class="painel-direito-calc">
-                <button style="background: #10b981; color: white; border: none; border-radius: 8px; height: 48px; font-weight: 700; cursor: pointer; margin-top: auto;" onclick="tentarEnviar('porte')">Emitir e Enviar Porte</button>
+                <button style="background: #10b981; color: white; border: none; border-radius: 8px; height: 48px; font-weight: 700; cursor: pointer; margin-top: auto;" onclick="enviarFormulario('porte')">Emitir e Enviar Porte</button>
                 <button style="background: rgba(255,255,255,0.08); color: white; border: 1px solid var(--border-subtle); border-radius: 8px; height: 38px; font-weight: 700; cursor: pointer;" onclick="mostrarHome()">Cancelar</button>
             </div>
         </div>
@@ -354,7 +447,7 @@
                 </div>
             </div>
             <div class="painel-direito-calc">
-                <button style="background: #10b981; color: white; border: none; border-radius: 8px; height: 45px; font-weight: 700; cursor: pointer; margin-top: auto;" onclick="tentarEnviar('bo')">Enviar Ocorrência</button>
+                <button style="background: #10b981; color: white; border: none; border-radius: 8px; height: 45px; font-weight: 700; cursor: pointer; margin-top: auto;" onclick="enviarFormulario('bo')">Enviar Ocorrência</button>
                 <button style="background: rgba(255,255,255,0.08); color: white; border: 1px solid var(--border-subtle); border-radius: 8px; height: 38px; font-weight: 700; cursor: pointer;" onclick="mostrarHome()">Cancelar</button>
             </div>
         </div>
@@ -383,7 +476,7 @@
                 </div>
             </div>
             <div class="painel-direito-calc">
-                <button style="background: #10b981; color: white; border: none; border-radius: 8px; height: 48px; font-weight: 700; cursor: pointer; margin-top: auto;" onclick="tentarEnviar('set')">Enviar Pedido de Set</button>
+                <button style="background: #10b981; color: white; border: none; border-radius: 8px; height: 48px; font-weight: 700; cursor: pointer; margin-top: auto;" onclick="enviarFormulario('set')">Enviar Pedido de Set</button>
                 <button style="background: rgba(255,255,255,0.08); color: white; border: 1px solid var(--border-subtle); border-radius: 8px; height: 38px; font-weight: 700; cursor: pointer;" onclick="mostrarHome()">Cancelar</button>
             </div>
         </div>
@@ -392,75 +485,97 @@
 
 <script>
     const DISCORD_CLIENT_ID = "1482774609685119187";
-    // Pegará automaticamente o link atual do GitHub Pages para redirecionar de volta no login
     const REDIRECT_URI = encodeURIComponent(window.location.origin + window.location.pathname);
 
-    // Variável para guardar os dados do usuário autenticado no momento do envio
-    let usuarioLogado = null;
+    // Lista fixa de exemplo de usuários/senhas do banco. (No futuro, você pode substituir por uma integração com API ou banco real).
+    const usuariosBDAutorizados = {
+        "admin": "123456",
+        "delegado": "senha123"
+    };
 
-    function verificarRetornoDiscord() {
+    function inicializarSistema() {
         const fragment = new URLSearchParams(window.location.hash.slice(1));
         const token = fragment.get('access_token');
-        const acaoPendente = sessionStorage.getItem('acao_pendente');
+        const dbUserLogado = sessionStorage.getItem('db_usuario_logado');
 
-        if (token) {
-            // Limpa a URL para sumir com o token
-            window.history.replaceState({}, document.title, window.location.pathname);
-            
-            // Valida o token na API do Discord
-            fetch('https://discord.com/api/users/@me', { headers: { authorization: `Bearer ${token}` } })
-            .then(res => res.json())
-            .then(user => {
-                usuarioLogado = user;
-                document.getElementById('user-status-box').innerHTML = `
-                    <img style="width: 36px; height: 36px; border-radius: 50%; border: 2px solid var(--accent-blue);" src="https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png">
-                    <div>
-                        <div style="font-size: 11px; color: var(--text-muted);">Autenticado</div>
-                        <strong style="font-size: 13px; color: #fff;">${user.username}</strong> (Visitante)
-                    </div>
-                `;
-
-                // Se o usuário estava tentando enviar um formulário antes de logar, prossegue com o envio agora
-                if (acaoPendente) {
-                    sessionStorage.removeItem('acao_pendente');
-                    executarEnvioFormulario(acaoPendente);
+        if (dbUserLogado) {
+            if (token) {
+                // Se já passou pelo login do DB e agora voltou do Discord com o token
+                window.history.replaceState({}, document.title, window.location.pathname);
+                
+                fetch('https://discord.com/api/users/@me', { headers: { authorization: `Bearer ${token}` } })
+                .then(res => res.json())
+                .then(user => {
+                    sessionStorage.setItem('discord_user_data', JSON.stringify(user));
+                    liberarPainelPrincipal(dbUserLogado, user);
+                }).catch(() => {
+                    alert("Erro ao verificar dados do Discord.");
+                    sairSistema();
+                });
+            } else {
+                // Tenta ver se já tem os dados do Discord salvos na sessão
+                const discordUser = JSON.parse(sessionStorage.getItem('discord_user_data') || 'null');
+                if (discordUser) {
+                    liberarPainelPrincipal(dbUserLogado, discordUser);
+                } else {
+                    // Passou pelo banco, mas falta autenticar no Discord agora
+                    dispararLoginDiscord();
                 }
-            }).catch(() => {
-                alert("Falha na autenticação com o Discord.");
-            });
+            }
+        } else {
+            // Mostra apenas a tela de login inicial do Banco de Dados
+            document.getElementById('auth-screen').style.display = 'flex';
+            document.getElementById('main-app').style.display = 'none';
         }
         atualizarDataHora();
     }
 
-    function dispararLoginDiscord(tipoAcao) {
-        sessionStorage.setItem('acao_pendente', tipoAcao);
+    function fazerLoginSistema() {
+        const usuarioInput = document.getElementById('db-user').value.trim();
+        const senhaInput = document.getElementById('db-pass').value.trim();
+        const erroBox = document.getElementById('login-error');
+
+        // Validação simples com o "banco" local de credenciais
+        if (usuariosBDAutorizados[usuarioInput] && usuariosBDAutorizados[usuarioInput] === senhaInput) {
+            erroBox.style.display = 'none';
+            // Salva na sessão que o login em usuário/senha passou
+            sessionStorage.setItem('db_usuario_logado', usuarioInput);
+            
+            // Etapa seguinte: Redirecionar para a autenticação do Discord
+            dispararLoginDiscord();
+        } else {
+            erroBox.style.display = 'block';
+        }
+    }
+
+    function dispararLoginDiscord() {
         const authUrl = `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&response_type=token&redirect_uri=${REDIRECT_URI}&scope=identify`;
         window.location.href = authUrl;
     }
 
-    function tentarEnviar(tipoAcao) {
-        if (!usuarioLogado) {
-            // Se ainda não logou, avisa e joga para o fluxo do Discord antes de enviar
-            if (confirm("Para enviar o formulário e registrar seu usuário automaticamente, é necessário autenticar com o Discord. Deseja prosseguir com o login?")) {
-                dispararLoginDiscord(tipoAcao);
-            }
-            return;
-        }
-        executarEnvioFormulario(tipoAcao);
+    function liberarPainelPrincipal(usuarioDB, discordUser) {
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('main-app').style.display = 'block';
+
+        document.getElementById('user-status-box').innerHTML = `
+            <img style="width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--accent-blue);" src="https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png">
+            <div>
+                <div style="font-size: 11px; color: var(--text-muted);">Conta: <strong>${usuarioDB}</strong></div>
+                <strong style="font-size: 13px; color: #fff;">${discordUser.username}</strong> <span style="color:var(--accent-gold); font-size:11px;">(Visitante)</span>
+            </div>
+        `;
     }
 
-    function executarEnvioFormulario(tipoAcao) {
-        // Aqui o usuário já está logado e mapeado (com o ID e nome do Discord disponíveis em 'usuarioLogado')
-        if (tipoAcao === 'bo') {
-            alert(`Ocorrência enviada com sucesso por ${usuarioLogado.username} (Registrado como Visitante)!`);
-            mostrarHome();
-        } else if (tipoAcao === 'set') {
-            alert(`Pedido de Set enviado com sucesso por ${usuarioLogado.username}!`);
-            mostrarHome();
-        } else if (tipoAcao === 'porte') {
-            alert(`Porte de Armas emitido com sucesso por ${usuarioLogado.username}!`);
-            mostrarHome();
-        }
+    function sairSistema() {
+        sessionStorage.clear();
+        window.location.hash = "";
+        window.location.href = window.location.pathname;
+    }
+
+    function enviarFormulario(tipo) {
+        const discordUser = JSON.parse(sessionStorage.getItem('discord_user_data') || '{}');
+        alert(`Formulário (${tipo.toUpperCase()}) enviado com sucesso por ${discordUser.username || 'Agente'}!`);
+        mostrarHome();
     }
 
     function esconderTudo() {
