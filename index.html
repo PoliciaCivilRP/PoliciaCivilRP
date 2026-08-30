@@ -32,19 +32,28 @@
         }
 
         <!-- TELA DE LOGIN -->
-        <div id="login-screen" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; text-align: center; background: #0a0f1d; padding: 20px;">
-            <div class="box-login" style="background: #131b2e; padding: 50px 40px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); max-width: 460px; width: 100%;">
-                <h1 style="color: #fff; font-size: 28px; margin-bottom: 5px;">POLÍCIA CIVIL</h1>
-                <h2 style="color: #f59e0b; font-size: 13px; letter-spacing: 3px; margin-bottom: 20px;">SISTEMA DE AUTENTICAÇÃO</h2>
+        <div id="login-screen">
+            <div class="box-login">
+                <h1>POLÍCIA CIVIL</h1>
+                <h2>ESTADO DE SAN ANDREAS</h2>
+                <p>Autentique-se com suas credenciais oficiais para acessar o painel integrado da corporação.</p>
         
-                <input type="text" id="input-user" placeholder="Usuário" style="width: 100%; padding: 12px; margin-bottom: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; outline: none;">
-                <input type="password" id="input-senha" placeholder="Senha" style="width: 100%; padding: 12px; margin-bottom: 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; outline: none;">
-        
-                <button onclick="tentarLogarPlanilha()" style="background: #3b82f6; color: white; padding: 14px; border: none; border-radius: 8px; font-weight: 700; width: 100%; cursor: pointer;">ACESSAR PAINEL</button>
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; text-align: left;">
+                    <div>
+                        <label style="font-size: 11.5px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; display: block;">USUÁRIO:</label>
+                        <input type="text" id="input-user" placeholder="Seu usuário" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-subtle); border-radius: 8px; color: #fff; outline: none; font-size: 13.5px;">
+                    </div>
+                    <div>
+                       <label style="font-size: 11.5px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; display: block;">SENHA:</label>
+                        <input type="password" id="input-senha" placeholder="Sua senha" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-subtle); border-radius: 8px; color: #fff; outline: none; font-size: 13.5px;">
+                    </div>
+                </div>
+
+                <button onclick="tentarLogarPlanilha()" class="btn-login" style="border: none; cursor: pointer; justify-content: center;">
+                    ACESSAR PAINEL
+                </button>
             </div>
         </div>
-
-        
 
         /* SISTEMA PRINCIPAL */
         #main-app { display: none; }
@@ -884,34 +893,6 @@
             }
         });
     }
-    
-    function tentarLogarPlanilha() {
-    const usuarioInput = document.getElementById('input-user').value;
-    const senhaInput = document.getElementById('input-senha').value;
-    const urlGoogleScript = "https://script.google.com/macros/s/AKfycbzkLGiT9exHct3TOT3qbLePRi7AHRolBYcMNUdEiznpw3TmocuNECf4RbgC-62p0hlNzA/exec";
-
-    // Monta a URL enviando os dados via parâmetros GET
-    const urlFinal = `${urlGoogleScript}?usuario=${encodeURIComponent(usuarioInput)}&senha=${encodeURIComponent(senhaInput)}`;
-
-    fetch(urlFinal)
-        .then(response => response.json())
-        .then(data => {
-            if (data.status === "sucesso") {
-                // Salva os dados da sessão no navegador
-                localStorage.setItem('usuario_logado', usuarioInput);
-                localStorage.setItem('cargo_usuario', data.cargo); // Ex: "Delegado", "Administrativo", etc.
-                
-                alert("Login efetuado com sucesso! Cargo: " + data.cargo);
-                location.reload(); // Recarrega para entrar no painel
-            } else {
-                alert("Erro: " + data.mensagem);
-            }
-        })
-        .catch(error => {
-            console.error("Erro na requisição:", error);
-            alert("Erro ao tentar conectar com o servidor de login.");
-        });
-     }
 </script>
 </body>
 </html>
