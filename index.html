@@ -46,12 +46,12 @@
             display: block; font-size: 12px; color: var(--text-muted);
             margin-bottom: 6px; font-weight: 700; text-transform: uppercase;
         }
-        .input-login-group input {
+        .input-login-group input, .input-login-group select {
             width: 100%; background: rgba(15, 23, 42, 0.8);
             border: 1px solid var(--border-subtle); padding: 12px;
             border-radius: 8px; color: #fff; font-size: 14px; outline: none;
         }
-        .input-login-group input:focus { border-color: var(--accent-blue); }
+        .input-login-group input:focus, .input-login-group select:focus { border-color: var(--accent-blue); }
 
         .btn-entrar {
             background: var(--accent-blue); color: white; border: none;
@@ -66,8 +66,8 @@
         }
         .btn-toggle-mode:hover { color: #fff; }
 
-        .error-msg { color: var(--accent-red); font-size: 12px; margin-top: 12px; display: none; }
-        .success-msg { color: var(--accent-green); font-size: 12px; margin-top: 12px; display: none; }
+        .error-msg { color: var(--accent-red); font-size: 12px; margin-top: 12px; display: none; background: rgba(239, 68, 68, 0.1); padding: 8px; border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.2); }
+        .success-msg { color: var(--accent-green); font-size: 12px; margin-top: 12px; display: none; background: rgba(16, 185, 129, 0.1); padding: 8px; border-radius: 6px; border: 1px solid rgba(16, 185, 129, 0.2); }
 
         #main-app { display: none; }
 
@@ -83,7 +83,7 @@
         .nav-links a:hover { color: #fff; background: rgba(255, 255, 255, 0.05); }
         .nav-links a.active { color: #fff; background: var(--accent-blue); }
 
-        .wrapper { max-width: 1240px; margin: 35px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 340px; gap: 30px; }
+        .wrapper { max-width: 1240px; margin: 35px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 360px; gap: 30px; }
         .hero-section {
             background: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(11, 19, 43, 0.95));
             border-radius: 14px; padding: 40px; border: 1px solid var(--border-subtle); position: relative;
@@ -95,6 +95,9 @@
         
         .sidebar-right { background: var(--bg-card); border-radius: 14px; padding: 24px; border: 1px solid var(--border-subtle); height: fit-content; }
         .sidebar-right h3 { font-size: 12px; color: var(--accent-gold); text-transform: uppercase; border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px; margin-top: 0; }
+        
+        .admin-panel { margin-top: 25px; border-top: 1px solid var(--border-subtle); padding-top: 20px; display: none; }
+        .admin-panel h4 { font-size: 12px; color: var(--accent-blue); text-transform: uppercase; margin-bottom: 15px; }
     </style>
 </head>
 <body onload="inicializarSistema()">
@@ -104,11 +107,6 @@
         <h1>POLÍCIA CIVIL</h1>
         <h2>ESTADO DE SAN ANDREAS</h2>
         
-        <div class="input-login-group" id="group-nome" style="display: none;">
-            <label>Nome Completo / Agente</label>
-            <input type="text" id="input-nome" placeholder="Seu nome">
-        </div>
-
         <div class="input-login-group">
             <label>Usuário</label>
             <input type="text" id="input-user" placeholder="Digite seu usuário">
@@ -146,29 +144,51 @@
                 <p>Sistema oficial unificado integrado com a planilha de controle online.</p>
             </div>
         </div>
+        
         <div class="sidebar-right">
             <h3>Credenciais do Agente</h3>
             <div style="margin: 15px 0;" id="user-status-box"></div>
+
+            <!-- Painel exclusivo para Delegados / Administrativo -->
+            <div id="painel-gerenciamento" class="admin-panel">
+                <h4>Gerenciar Membros</h4>
+                <div class="input-login-group">
+                    <label>Pesquisar ou Selecionar Usuário</label>
+                    <input type="text" id="admin-search-user" placeholder="Digite para filtrar..." oninput="filtrarUsuariosSelect()">
+                    <select id="admin-select-user" size="4" style="margin-top: 6px; height: 90px;" onclick="preencherCargoAlvo()"></select>
+                </div>
+                
+                <div class="input-login-group">
+                    <label>Novo Cargo</label>
+                    <select id="admin-novo-cargo">
+                        <option value="Visitante">Visitante</option>
+                        <option value="Administrativo">Administrativo</option>
+                        <option value="Delegado Adjunto">Delegado Adjunto</option>
+                        <option value="Delegado">Delegado</option>
+                        <option value="Administrador Geral">Administrador Geral</option>
+                    </select>
+                </div>
+
+                <div class="input-login-group">
+                    <label>Sua Senha (Confirmação)</label>
+                    <input type="password" id="admin-confirm-pass" placeholder="Digite sua senha">
+                </div>
+
+                <button class="btn-entrar" onclick="salvarAlteracaoCargo()">Salvar Alteração</button>
+                <div id="admin-error" class="error-msg"></div>
+                <div id="admin-success" class="success-msg"></div>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Cole aqui embaixo o URL que o Google Apps Script gerou para você:
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwjwL1IxVs9mcYWoMyHxXh7dRrYq2IR6hHSuUBAjVd5zOo4US2IfBHP3kPn_fWkX-CBoA/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyXSVN7wlFxF17RCKXnpO9LNCMzPqX4iiEKqErlDaVMFCvvOr4Z-onb9-JPL8ybHrA6Vg/exec";
     
     const DISCORD_CLIENT_ID = "1482774609685119187";
     const REDIRECT_URI = encodeURIComponent(window.location.origin + window.location.pathname);
     let modoRegistro = false;
-
-    async function carregarBaseUsuarios() {
-        try {
-            const resposta = await fetch(GOOGLE_SCRIPT_URL);
-            return await resposta.json();
-        } catch (e) {
-            return {};
-        }
-    }
+    let cacheUsuariosGlobal = {};
 
     async function inicializarSistema() {
         const fragment = new URLSearchParams(window.location.hash.slice(1));
@@ -176,27 +196,32 @@
         const usuarioLogado = sessionStorage.getItem('usuario_logado');
 
         if (usuarioLogado) {
-            const usuarios = await carregarBaseUsuarios();
-            const dadosUsuario = usuarios[usuarioLogado] || { cargo: "Visitante", nome: usuarioLogado };
+            try {
+                const res = await fetch(GOOGLE_SCRIPT_URL);
+                cacheUsuariosGlobal = await res.json();
+                const dadosUsuario = cacheUsuariosGlobal[usuarioLogado] || { cargo: "Visitante" };
 
-            if (token) {
-                window.history.replaceState({}, document.title, window.location.pathname);
-                fetch('https://discord.com/api/users/@me', { headers: { authorization: `Bearer ${token}` } })
-                .then(res => res.json())
-                .then(discordUser => {
-                    sessionStorage.setItem('discord_user', JSON.stringify(discordUser));
-                    liberarPainel(usuarioLogado, dadosUsuario.cargo, discordUser);
-                }).catch(() => liberarPainel(usuarioLogado, dadosUsuario.cargo, null));
-            } else {
                 const discordUser = JSON.parse(sessionStorage.getItem('discord_user') || 'null');
-                liberarPainel(usuarioLogado, dadosUsuario.cargo, discordUser);
+                if (token) {
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    fetch('https://discord.com/api/users/@me', { headers: { authorization: `Bearer ${token}` } })
+                    .then(res => res.json())
+                    .then(dUser => {
+                        sessionStorage.setItem('discord_user', JSON.stringify(dUser));
+                        liberarPainel(usuarioLogado, dadosUsuario.cargo, dUser);
+                    }).catch(() => liberarPainel(usuarioLogado, dadosUsuario.cargo, discordUser));
+                } else {
+                    liberarPainel(usuarioLogado, dadosUsuario.cargo, discordUser);
+                }
+            } catch (err) {
+                // Fallback se falhar ao buscar dados
+                liberarPainel(usuarioLogado, "Visitante", null);
             }
         }
     }
 
     function alternarModoRegistro() {
         modoRegistro = !modoRegistro;
-        document.getElementById('group-nome').style.display = modoRegistro ? 'block' : 'none';
         document.getElementById('btn-submit-auth').innerText = modoRegistro ? 'CADASTRAR NA PLANILHA' : 'ACESSAR PAINEL';
         document.getElementById('btn-switch-mode').innerText = modoRegistro ? 'Já tem uma conta? Faça login' : 'Não tem uma conta? Crie uma agora';
         document.getElementById('auth-error').style.display = 'none';
@@ -206,37 +231,42 @@
     async function executarAcaoAuth() {
         const user = document.getElementById('input-user').value.trim();
         const pass = document.getElementById('input-pass').value.trim();
-        const nome = document.getElementById('input-nome').value.trim();
         const errorBox = document.getElementById('auth-error');
         const successBox = document.getElementById('auth-success');
 
         errorBox.style.display = 'none';
         successBox.style.display = 'none';
 
-        if (!user || !pass || (modoRegistro && !nome)) {
-            errorBox.innerText = "Preencha todos os campos obrigatórios.";
+        if (!user || !pass) {
+            errorBox.innerText = "Por favor, preencha usuário e senha.";
+            errorBox.style.display = 'block';
+            return;
+        }
+
+        if (GOOGLE_SCRIPT_URL.includes("COLE_AQUI")) {
+            errorBox.innerText = "Erro de configuração: Cole o link do Google Apps Script no código.";
             errorBox.style.display = 'block';
             return;
         }
 
         if (modoRegistro) {
-            successBox.innerText = "Salvando cadastro na planilha...";
+            successBox.innerText = "Registrando usuário...";
             successBox.style.display = 'block';
             
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    body: JSON.stringify({ action: 'cadastrar', usuario: user, senha: pass, nome: nome })
+                    body: JSON.stringify({ action: 'cadastrar', usuario: user, senha: pass })
                 });
                 const resultado = await response.json();
                 
                 if (resultado.status === 'sucesso') {
-                    successBox.innerText = "Cadastrado com sucesso! Redirecionando para o Discord...";
+                    successBox.innerText = "Conta criada! Redirecionando para o Discord...";
                     sessionStorage.setItem('usuario_logado', user);
-                    setTimeout(() => dispararLoginDiscord(), 2000);
+                    setTimeout(() => dispararLoginDiscord(), 1500);
                 } else {
                     successBox.style.display = 'none';
-                    errorBox.innerText = resultado.mensagem || "Erro ao cadastrar.";
+                    errorBox.innerText = resultado.mensagem || "Erro ao registrar.";
                     errorBox.style.display = 'block';
                 }
             } catch (err) {
@@ -245,12 +275,25 @@
                 errorBox.style.display = 'block';
             }
         } else {
-            const usuarios = await carregarBaseUsuarios();
-            if (usuarios[user] && usuarios[user].senha === pass) {
-                sessionStorage.setItem('usuario_logado', user);
-                dispararLoginDiscord();
-            } else {
-                errorBox.innerText = "Usuário ou senha incorretos.";
+            successBox.innerText = "Verificando credenciais...";
+            successBox.style.display = 'block';
+
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL);
+                const usuarios = await response.json();
+
+                successBox.style.display = 'none';
+
+                if (usuarios[user] && usuarios[user].senha === pass) {
+                    sessionStorage.setItem('usuario_logado', user);
+                    dispararLoginDiscord();
+                } else {
+                    errorBox.innerText = "Usuário ou senha incorretos.";
+                    errorBox.style.display = 'block';
+                }
+            } catch (err) {
+                successBox.style.display = 'none';
+                errorBox.innerText = "Erro ao acessar planilha.";
                 errorBox.style.display = 'block';
             }
         }
@@ -276,12 +319,96 @@
             <div style="display: flex; align-items: center; gap: 12px;">
                 ${avatarHtml}
                 <div>
-                    <div style="font-size: 11px; color: var(--text-muted);">ID: <strong>${usuario}</strong></div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Usuário: <strong>${usuario}</strong></div>
                     <strong style="font-size: 13px; color: #fff;">${discordName}</strong> <br>
                     <span style="color:var(--accent-gold); font-size:11px;">(${cargo})</span>
                 </div>
             </div>
         `;
+
+        // Se for Delegado ou Administrador Geral, libera o painel administrativo na sidebar
+        if (cargo === "Delegado" || cargo === "Administrador Geral") {
+            document.getElementById('painel-gerenciamento').style.display = 'block';
+            popularSelectUsuarios();
+        }
+    }
+
+    function popularSelectUsuarios(filtro = "") {
+        const select = document.getElementById('admin-select-user');
+        select.innerHTML = "";
+        
+        for (let user in cacheUsuariosGlobal) {
+            if (user.toLowerCase().includes(filtro.toLowerCase())) {
+                let opt = document.createElement('option');
+                opt.value = user;
+                opt.text = `${user} — [${cacheUsuariosGlobal[user].cargo}]`;
+                select.appendChild(opt);
+            }
+        }
+    }
+
+    function filtrarUsuariosSelect() {
+        const termo = document.getElementById('admin-search-user').value;
+        popularSelectUsuarios(termo);
+    }
+
+    function preencherCargoAlvo() {
+        const select = document.getElementById('admin-select-user');
+        const userSelecionado = select.value;
+        if (userSelecionado && cacheUsuariosGlobal[userSelecionado]) {
+            document.getElementById('admin-novo-cargo').value = cacheUsuariosGlobal[userSelecionado].cargo;
+        }
+    }
+
+    async function salvarAlteracaoCargo() {
+        const adminUser = sessionStorage.getItem('usuario_logado');
+        const alvoUsuario = document.getElementById('admin-select-user').value;
+        const novoCargo = document.getElementById('admin-novo-cargo').value;
+        const adminSenha = document.getElementById('admin-confirm-pass').value.trim();
+        const errorBox = document.getElementById('admin-error');
+        const successBox = document.getElementById('admin-success');
+
+        errorBox.style.display = 'none';
+        successBox.style.display = 'none';
+
+        if (!alvoUsuario || !adminSenha) {
+            errorBox.innerText = "Selecione um usuário e digite sua senha para confirmar.";
+            errorBox.style.display = 'block';
+            return;
+        }
+
+        successBox.innerText = "Salvando alteração na planilha...";
+        successBox.style.display = 'block';
+
+        try {
+            const response = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({
+                    action: 'atualizar_cargo',
+                    adminUser: adminUser,
+                    adminSenha: adminSenha,
+                    alvoUsuario: alvoUsuario,
+                    novoCargo: novoCargo
+                })
+            });
+            const resultado = await response.json();
+
+            if (resultado.status === 'sucesso') {
+                successBox.innerText = "Cargo atualizado com sucesso!";
+                cacheUsuariosGlobal[alvoUsuario].cargo = novoCargo;
+                popularSelectUsuarios();
+                document.getElementById('admin-confirm-pass').value = "";
+                setTimeout(() => { successBox.style.display = 'none'; }, 3000);
+            } else {
+                successBox.style.display = 'none';
+                errorBox.innerText = resultado.mensagem || "Erro ao atualizar cargo.";
+                errorBox.style.display = 'block';
+            }
+        } catch (err) {
+            successBox.style.display = 'none';
+            errorBox.innerText = "Erro de conexão ao salvar.";
+            errorBox.style.display = 'block';
+        }
     }
 
     function sairSistema() {
