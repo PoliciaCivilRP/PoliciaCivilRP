@@ -46,12 +46,12 @@
             display: block; font-size: 12px; color: var(--text-muted);
             margin-bottom: 6px; font-weight: 700; text-transform: uppercase;
         }
-        .input-login-group input, .input-login-group select {
+        .input-login-group input, .input-login-group select, .input-login-group textarea {
             width: 100%; background: rgba(15, 23, 42, 0.8);
             border: 1px solid var(--border-subtle); padding: 12px;
             border-radius: 8px; color: #fff; font-size: 14px; outline: none;
         }
-        .input-login-group input:focus, .input-login-group select:focus { border-color: var(--accent-blue); }
+        .input-login-group input:focus, .input-login-group select:focus, .input-login-group textarea:focus { border-color: var(--accent-blue); }
 
         .btn-entrar {
             background: var(--accent-blue); color: white; border: none;
@@ -98,6 +98,9 @@
         
         .admin-panel { margin-top: 25px; border-top: 1px solid var(--border-subtle); padding-top: 20px; display: none; }
         .admin-panel h4 { font-size: 12px; color: var(--accent-blue); text-transform: uppercase; margin-bottom: 15px; }
+
+        .form-section-container { background: var(--bg-card); border-radius: 14px; padding: 30px; border: 1px solid var(--border-subtle); display: none; }
+        .form-section-container h2 { font-size: 16px; color: var(--accent-gold); margin-top: 0; margin-bottom: 20px; text-transform: uppercase; border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px; }
     </style>
 </head>
 <body onload="inicializarSistema()">
@@ -108,13 +111,18 @@
         <h2>ESTADO DE SAN ANDREAS</h2>
         
         <div class="input-login-group">
-            <label>Usuário</label>
+            <label id="label-usuario-txt">Usuário</label>
             <input type="text" id="input-user" placeholder="Digite seu usuário">
         </div>
         
         <div class="input-login-group">
             <label>Senha</label>
             <input type="password" id="input-pass" placeholder="••••••••">
+        </div>
+
+        <div class="input-login-group" id="group-confirma-pass" style="display: none;">
+            <label>Confirme sua Senha</label>
+            <input type="password" id="input-pass-confirm" placeholder="••••••••">
         </div>
 
         <button class="btn-entrar" id="btn-submit-auth" onclick="executarAcaoAuth()">ACESSAR PAINEL</button>
@@ -128,68 +136,152 @@
 
 <div id="main-app">
     <header>
-        <div class="logo-area">POLÍCIA CIVIL — SAN ANDREAS</div>
+        <div class="logo-area" onclick="mostrarAba('inicio')">POLÍCIA CIVIL — SAN ANDREAS</div>
         <div class="nav-links">
-            <a class="active">INÍCIO</a>
+            <a id="nav-inicio" class="active" onclick="mostrarAba('inicio')">INÍCIO</a>
+            <a id="nav-porte" onclick="mostrarAba('porte')">PORTE DE ARMA</a>
+            <a id="nav-set" onclick="mostrarAba('set')">PEDIR SET</a>
             <a href="https://discord.gg/SEU_DISCORD_AQUI" target="_blank" style="color: #60a5fa;">DISCORD</a>
             <a onclick="sairSistema()" style="color: #ff4757;">SAIR</a>
         </div>
     </header>
 
-    <div class="wrapper">
-        <div>
-            <div class="hero-section">
-                <h2>DEPARTAMENTO DE POLÍCIA CIVIL</h2>
-                <h1>INVESTIGAÇÃO, RIGOR E JUSTIÇA</h1>
-                <p>Sistema oficial unificado integrado com a planilha de controle online.</p>
+    <div class="wrapper" id="content-wrapper">
+        <!-- ABA DE INÍCIO -->
+        <div id="tab-inicio" class="tab-content" style="display: contents;">
+            <div>
+                <div class="hero-section">
+                    <h2>DEPARTAMENTO DE POLÍCIA CIVIL</h2>
+                    <h1>INVESTIGAÇÃO, RIGOR E JUSTIÇA</h1>
+                    <p>Sistema oficial unificado integrado com a planilha de controle online e webhooks do Discord.</p>
+                </div>
+            </div>
+            
+            <div class="sidebar-right">
+                <h3>Credenciais do Agente</h3>
+                <div style="margin: 15px 0;" id="user-status-box"></div>
+
+                <div id="painel-gerenciamento" class="admin-panel">
+                    <h4>Gerenciar Membros</h4>
+                    <div class="input-login-group">
+                        <label>Pesquisar ou Selecionar Usuário</label>
+                        <input type="text" id="admin-search-user" placeholder="Digite para filtrar..." oninput="filtrarUsuariosSelect()">
+                        <select id="admin-select-user" size="4" style="margin-top: 6px; height: 90px;" onclick="preencherCargoAlvo()"></select>
+                    </div>
+                    
+                    <div class="input-login-group">
+                        <label>Novo Cargo</label>
+                        <select id="admin-novo-cargo">
+                            <option value="Visitante">Visitante</option>
+                            <option value="Administrativo">Administrativo</option>
+                            <option value="Delegado Adjunto">Delegado Adjunto</option>
+                            <option value="Delegado">Delegado</option>
+                            <option value="Administrador Geral">Administrador Geral</option>
+                        </select>
+                    </div>
+
+                    <div class="input-login-group">
+                        <label>Sua Senha (Confirmação)</label>
+                        <input type="password" id="admin-confirm-pass" placeholder="Digite sua senha">
+                    </div>
+
+                    <button class="btn-entrar" onclick="salvarAlteracaoCargo()">Salvar Alteração</button>
+                    <div id="admin-error" class="error-msg"></div>
+                    <div id="admin-success" class="success-msg"></div>
+                </div>
             </div>
         </div>
-        
-        <div class="sidebar-right">
-            <h3>Credenciais do Agente</h3>
-            <div style="margin: 15px 0;" id="user-status-box"></div>
 
-            <!-- Painel exclusivo para Delegados / Administrativo -->
-            <div id="painel-gerenciamento" class="admin-panel">
-                <h4>Gerenciar Membros</h4>
-                <div class="input-login-group">
-                    <label>Pesquisar ou Selecionar Usuário</label>
-                    <input type="text" id="admin-search-user" placeholder="Digite para filtrar..." oninput="filtrarUsuariosSelect()">
-                    <select id="admin-select-user" size="4" style="margin-top: 6px; height: 90px;" onclick="preencherCargoAlvo()"></select>
-                </div>
+        <!-- ABA DE PORTE DE ARMA -->
+        <div id="tab-porte" class="tab-content" style="display: none; grid-column: 1 / -1;">
+            <div class="form-section-container" style="display: block; max-width: 800px; margin: 0 auto;">
+                <h2>Emissão de Porte de Arma</h2>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Restrito para Delegado Adjunto, Delegado e Administrador Geral.</p>
                 
                 <div class="input-login-group">
-                    <label>Novo Cargo</label>
-                    <select id="admin-novo-cargo">
-                        <option value="Acadepol">Acadepol</option>
-                        <option value="Agente">Agente</option>
+                    <label>Nome do Solicitante</label>
+                    <input type="text" id="porte-nome" placeholder="Nome completo do cidadão">
+                </div>
+                <div class="input-login-group">
+                    <label>Passaporte do Solicitante (ID)</label>
+                    <input type="text" id="porte-passaporte" placeholder="ID do passaporte">
+                </div>
+                <div class="input-login-group">
+                    <label>Placas de Veículos</label>
+                    <input type="text" id="porte-placas" placeholder="Ex: ABC1234, XYZ9876">
+                </div>
+                <div class="input-login-group">
+                    <label>Policial Responsável pelo Registro</label>
+                    <input type="text" id="porte-policial" placeholder="Seu nome / patente">
+                </div>
+                <div class="input-login-group">
+                    <label>Data e Hora do Registro</label>
+                    <input type="text" id="porte-datahora" placeholder="DD/MM/AAAA HH:MM">
+                </div>
+
+                <button class="btn-entrar" onclick="enviarPorteArma()">Enviar Relatório de Porte</button>
+                <div id="porte-error" class="error-msg"></div>
+                <div id="porte-success" class="success-msg"></div>
+            </div>
+        </div>
+
+        <!-- ABA DE PEDIR SET -->
+        <div id="tab-set" class="tab-content" style="display: none; grid-column: 1 / -1;">
+            <div class="form-section-container" style="display: block; max-width: 800px; margin: 0 auto;">
+                <h2>Solicitação de Set (Recrutamento)</h2>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Disponível para preenchimento por qualquer agente.</p>
+                
+                <div class="input-login-group">
+                    <label>Nome e Sobrenome do Policial</label>
+                    <input type="text" id="set-nome" placeholder="Nome completo">
+                </div>
+                <div class="input-login-group">
+                    <label>Passaporte / ID</label>
+                    <input type="text" id="set-passaporte" placeholder="ID do passaporte">
+                </div>
+                <div class="input-login-group">
+                    <label>ID do Discord (Ex: @usuario ou ID numérico para marcação)</label>
+                    <input type="text" id="set-discord-id" placeholder="Ex: 123456789012345678">
+                </div>
+                <div class="input-login-group">
+                    <label>Nome do Recrutador</label>
+                    <input type="text" id="set-recrutador" placeholder="Quem recrutou">
+                </div>
+                <div class="input-login-group">
+                    <label>Data e Horário do Recrutamento</label>
+                    <input type="text" id="set-datahora" placeholder="DD/MM/AAAA HH:MM">
+                </div>
+                <div class="input-login-group">
+                    <label>Patente Requisitada</label>
+                    <select id="set-patente">
+                        <option value="Recruta">Recruta</option>
                         <option value="Investigador">Investigador</option>
+                        <option value="Investigador Chefe">Investigador Chefe</option>
                         <option value="Delegado Adjunto">Delegado Adjunto</option>
                         <option value="Delegado">Delegado</option>
-                        <option value="Administrador Geral">Administrador Geral</option>
                     </select>
                 </div>
 
-                <div class="input-login-group">
-                    <label>Sua Senha (Confirmação)</label>
-                    <input type="password" id="admin-confirm-pass" placeholder="Digite sua senha">
-                </div>
-
-                <button class="btn-entrar" onclick="salvarAlteracaoCargo()">Salvar Alteração</button>
-                <div id="admin-error" class="error-msg"></div>
-                <div id="admin-success" class="success-msg"></div>
+                <button class="btn-entrar" onclick="enviarPedirSet()">Enviar Solicitação de Set</button>
+                <div id="set-error" class="error-msg"></div>
+                <div id="set-success" class="success-msg"></div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyXSVN7wlFxF17RCKXnpO9LNCMzPqX4iiEKqErlDaVMFCvvOr4Z-onb9-JPL8ybHrA6Vg/exec";
+    const GOOGLE_SCRIPT_URL = "COLE_AQUI_O_LINK_DO_WEB_APP_DO_GOOGLE";
     
+    // Insira os Webhooks do Discord aqui:
+    const WEBHOOK_PORTE_URL = "COLE_AQUI_O_WEBHOOK_DO_PORTE_DE_ARMA";
+    const WEBHOOK_SET_URL = "COLE_AQUI_O_WEBHOOK_DE_PEDIR_SET";
+
     const DISCORD_CLIENT_ID = "1482774609685119187";
     const REDIRECT_URI = encodeURIComponent(window.location.origin + window.location.pathname);
     let modoRegistro = false;
     let cacheUsuariosGlobal = {};
+    let usuarioAtualDados = { cargo: "Visitante" };
 
     async function inicializarSistema() {
         const fragment = new URLSearchParams(window.location.hash.slice(1));
@@ -200,7 +292,7 @@
             try {
                 const res = await fetch(GOOGLE_SCRIPT_URL);
                 cacheUsuariosGlobal = await res.json();
-                const dadosUsuario = cacheUsuariosGlobal[usuarioLogado] || { cargo: "Visitante" };
+                usuarioAtualDados = cacheUsuariosGlobal[usuarioLogado] || { cargo: "Visitante" };
 
                 const discordUser = JSON.parse(sessionStorage.getItem('discord_user') || 'null');
                 if (token) {
@@ -209,13 +301,12 @@
                     .then(res => res.json())
                     .then(dUser => {
                         sessionStorage.setItem('discord_user', JSON.stringify(dUser));
-                        liberarPainel(usuarioLogado, dadosUsuario.cargo, dUser);
-                    }).catch(() => liberarPainel(usuarioLogado, dadosUsuario.cargo, discordUser));
+                        liberarPainel(usuarioLogado, usuarioAtualDados.cargo, dUser);
+                    }).catch(() => liberarPainel(usuarioLogado, usuarioAtualDados.cargo, discordUser));
                 } else {
-                    liberarPainel(usuarioLogado, dadosUsuario.cargo, discordUser);
+                    liberarPainel(usuarioLogado, usuarioAtualDados.cargo, discordUser);
                 }
             } catch (err) {
-                // Fallback se falhar ao buscar dados
                 liberarPainel(usuarioLogado, "Visitante", null);
             }
         }
@@ -223,7 +314,9 @@
 
     function alternarModoRegistro() {
         modoRegistro = !modoRegistro;
-        document.getElementById('btn-submit-auth').innerText = modoRegistro ? 'CADASTRAR NA PLANILHA' : 'ACESSAR PAINEL';
+        document.getElementById('group-confirma-pass').style.display = modoRegistro ? 'block' : 'none';
+        document.getElementById('label-usuario-txt').innerText = modoRegistro ? 'Novo Usuário' : 'Usuário';
+        document.getElementById('btn-submit-auth').innerText = modoRegistro ? 'CRIAR NOVA CONTA' : 'ACESSAR PAINEL';
         document.getElementById('btn-switch-mode').innerText = modoRegistro ? 'Já tem uma conta? Faça login' : 'Não tem uma conta? Crie uma agora';
         document.getElementById('auth-error').style.display = 'none';
         document.getElementById('auth-success').style.display = 'none';
@@ -232,14 +325,21 @@
     async function executarAcaoAuth() {
         const user = document.getElementById('input-user').value.trim();
         const pass = document.getElementById('input-pass').value.trim();
+        const passConfirm = document.getElementById('input-pass-confirm').value.trim();
         const errorBox = document.getElementById('auth-error');
         const successBox = document.getElementById('auth-success');
 
         errorBox.style.display = 'none';
         successBox.style.display = 'none';
 
-        if (!user || !pass) {
-            errorBox.innerText = "Por favor, preencha usuário e senha.";
+        if (!user || !pass || (modoRegistro && !passConfirm)) {
+            errorBox.innerText = "Por favor, preencha todos os campos obrigatórios.";
+            errorBox.style.display = 'block';
+            return;
+        }
+
+        if (modoRegistro && pass !== passConfirm) {
+            errorBox.innerText = "As senhas não batem. As senhas devem ser iguais.";
             errorBox.style.display = 'block';
             return;
         }
@@ -251,7 +351,7 @@
         }
 
         if (modoRegistro) {
-            successBox.innerText = "Registrando usuário...";
+            successBox.innerText = "Registrando novo usuário...";
             successBox.style.display = 'block';
             
             try {
@@ -262,7 +362,7 @@
                 const resultado = await response.json();
                 
                 if (resultado.status === 'sucesso') {
-                    successBox.innerText = "Conta criada! Redirecionando para o Discord...";
+                    successBox.innerText = "Conta criada com sucesso! Redirecionando para o Discord...";
                     sessionStorage.setItem('usuario_logado', user);
                     setTimeout(() => dispararLoginDiscord(), 1500);
                 } else {
@@ -327,10 +427,178 @@
             </div>
         `;
 
-        // Se for Delegado ou Administrador Geral, libera o painel administrativo na sidebar
-        if (cargo === "Delegado" || cargo === "Delegado Adjunto" || cargo === "Administrador Geral") {
+        if (cargo === "Delegado" || cargo === "Administrador Geral") {
             document.getElementById('painel-gerenciamento').style.display = 'block';
             popularSelectUsuarios();
+        }
+    }
+
+    function mostrarAba(aba) {
+        document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
+
+        if (aba === 'inicio') {
+            document.getElementById('tab-inicio').style.display = 'contents';
+            document.getElementById('nav-inicio').classList.add('active');
+        } else if (aba === 'porte') {
+            document.getElementById('tab-porte').style.display = 'block';
+            document.getElementById('nav-porte').classList.add('active');
+        } else if (aba === 'set') {
+            document.getElementById('tab-set').style.display = 'block';
+            document.getElementById('nav-set').classList.add('active');
+        }
+    }
+
+    // Envio do Relatório de Porte de Arma via Webhook
+    async function enviarPorteArma() {
+        const errorBox = document.getElementById('porte-error');
+        const successBox = document.getElementById('porte-success');
+        errorBox.style.display = 'none';
+        successBox.style.display = 'none';
+
+        // Validação de Permissão: Apenas Delegado Adjunto, Delegado, Administrador Geral
+        const cargoAtual = usuarioAtualDados.cargo;
+        if (cargoAtual !== "Delegado Adjunto" && cargoAtual !== "Delegado" && cargoAtual !== "Administrador Geral") {
+            errorBox.innerText = "Erro: Apenas Delegado Adjunto, Delegado e Administrador Geral podem emitir porte de arma.";
+            errorBox.style.display = 'block';
+            return;
+        }
+
+        const nome = document.getElementById('porte-nome').value.trim();
+        const passaporte = document.getElementById('porte-passaporte').value.trim();
+        const placas = document.getElementById('porte-placas').value.trim();
+        const policial = document.getElementById('porte-policial').value.trim();
+        const datahora = document.getElementById('porte-datahora').value.trim();
+
+        if (!nome || !passaporte || !placas || !policial || !datahora) {
+            errorBox.innerText = "Preencha todos os campos do formulário de porte de arma.";
+            errorBox.style.display = 'block';
+            return;
+        }
+
+        if (WEBHOOK_PORTE_URL.includes("COLE_AQUI")) {
+            errorBox.innerText = "Erro de configuração: Webhook do Porte de Arma não configurado.";
+            errorBox.style.display = 'block';
+            return;
+        }
+
+        successBox.innerText = "Enviando relatório para o Discord...";
+        successBox.style.display = 'block';
+
+        const payload = {
+            content: "🔫 **Novo Registro de Porte de Arma Emitido**",
+            embeds: [{
+                title: "Certificado de Porte de Arma",
+                color: 16766720,
+                fields: [
+                    { name: "Solicitante", value: nome, inline: true },
+                    { name: "Passaporte (ID)", value: passaporte, inline: true },
+                    { name: "Placas de Veículos", value: placas, inline: false },
+                    { name: "Policial Responsável", value: policial, inline: true },
+                    { name: "Data e Hora", value: datahora, inline: true }
+                ],
+                timestamp: new Date().toISOString()
+            }]
+        };
+
+        try {
+            const res = await fetch(WEBHOOK_PORTE_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok || res.status === 204) {
+                successBox.innerText = "Relatório de porte de arma enviado com sucesso!";
+                document.getElementById('porte-nome').value = "";
+                document.getElementById('porte-passaporte').value = "";
+                document.getElementById('porte-placas').value = "";
+                document.getElementById('porte-policial').value = "";
+                document.getElementById('porte-datahora').value = "";
+            } else {
+                successBox.style.display = 'none';
+                errorBox.innerText = "Erro ao enviar via webhook do Discord.";
+                errorBox.style.display = 'block';
+            }
+        } catch (err) {
+            successBox.style.display = 'none';
+            errorBox.innerText = "Falha de conexão com o webhook.";
+            errorBox.style.display = 'block';
+        }
+    }
+
+    // Envio do Relatório de Pedir Set via Webhook (Qualquer um pode enviar, marcando o ID do Discord)
+    async function enviarPedirSet() {
+        const errorBox = document.getElementById('set-error');
+        const successBox = document.getElementById('set-success');
+        errorBox.style.display = 'none';
+        successBox.style.display = 'none';
+
+        const nome = document.getElementById('set-nome').value.trim();
+        const passaporte = document.getElementById('set-passaporte').value.trim();
+        const discordId = document.getElementById('set-discord-id').value.trim();
+        const recrutador = document.getElementById('set-recrutador').value.trim();
+        const datahora = document.getElementById('set-datahora').value.trim();
+        const patente = document.getElementById('set-patente').value;
+
+        if (!nome || !passaporte || !discordId || !recrutador || !datahora) {
+            errorBox.innerText = "Preencha todos os campos do formulário de pedido de set.";
+            errorBox.style.display = 'block';
+            return;
+        }
+
+        if (WEBHOOK_SET_URL.includes("COLE_AQUI")) {
+            errorBox.innerText = "Erro de configuração: Webhook de Pedir Set não configurado.";
+            errorBox.style.display = 'block';
+            return;
+        }
+
+        successBox.innerText = "Enviando solicitação de set...";
+        successBox.style.display = 'block';
+
+        // Formato <@ID> marca o usuário no Discord mesmo sem acesso ao canal
+        const mencaoDiscord = discordId.startsWith('<@') ? discordId : `<@${discordId}>`;
+
+        const payload = {
+            content: `📋 **Nova Solicitação de Set Registrada**\nMencionado: ${mencaoDiscord}`,
+            embeds: [{
+                title: "Relatório de Recrutamento / Set",
+                color: 38663,
+                fields: [
+                    { name: "Policial", value: nome, inline: true },
+                    { name: "Passaporte (ID)", value: passaporte, inline: true },
+                    { name: "Discord", value: mencaoDiscord, inline: false },
+                    { name: "Recrutador", value: recrutador, inline: true },
+                    { name: "Patente Requisitada", value: patente, inline: true },
+                    { name: "Data e Horário", value: datahora, inline: false }
+                ],
+                timestamp: new Date().toISOString()
+            }]
+        };
+
+        try {
+            const res = await fetch(WEBHOOK_SET_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (res.ok || res.status === 204) {
+                successBox.innerText = "Solicitação de set enviada com sucesso!";
+                document.getElementById('set-nome').value = "";
+                document.getElementById('set-passaporte').value = "";
+                document.getElementById('set-discord-id').value = "";
+                document.getElementById('set-recrutador').value = "";
+                document.getElementById('set-datahora').value = "";
+            } else {
+                successBox.style.display = 'none';
+                errorBox.innerText = "Erro ao enviar via webhook do Discord.";
+                errorBox.style.display = 'block';
+            }
+        } catch (err) {
+            successBox.style.display = 'none';
+            errorBox.innerText = "Falha de conexão com o webhook.";
+            errorBox.style.display = 'block';
         }
     }
 
