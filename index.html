@@ -11,27 +11,24 @@
             --accent-blue: #3b82f6;
             --accent-gold: #f59e0b;
             --accent-red: #ef4444;
-            --discord-color: #5865F2;
+            --accent-green: #10b981;
             --border-subtle: rgba(255, 255, 255, 0.08);
             --text-main: #f1f5f9;
             --text-muted: #94a3b8;
         }
 
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
+        *, *::before, *::after { box-sizing: border-box; }
 
         body { 
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
             background-color: var(--bg-dark); 
-            margin: 0; 
-            padding: 0; 
+            margin: 0; padding: 0; 
             color: var(--text-main); 
             min-height: 100vh;
             background-image: radial-gradient(circle at 50% 0%, #111c33 0%, var(--bg-dark) 70%);
         }
 
-        /* TELA DE LOGIN INICIAL (USUÁRIO E SENHA) */
+        /* TELA DE AUTENTICAÇÃO (LOGIN / REGISTRO) */
         #auth-screen {
             display: flex;
             align-items: center;
@@ -75,9 +72,7 @@
             outline: none;
             transition: border-color 0.2s;
         }
-        .input-login-group input:focus {
-            border-color: var(--accent-blue);
-        }
+        .input-login-group input:focus { border-color: var(--accent-blue); }
 
         .btn-entrar {
             background: var(--accent-blue);
@@ -93,6 +88,17 @@
             transition: opacity 0.2s;
         }
         .btn-entrar:hover { opacity: 0.9; }
+        
+        .btn-toggle-mode {
+            background: transparent;
+            color: var(--text-muted);
+            border: none;
+            font-size: 12px;
+            margin-top: 18px;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .btn-toggle-mode:hover { color: #fff; }
 
         .error-msg {
             color: var(--accent-red);
@@ -100,11 +106,16 @@
             margin-top: 12px;
             display: none;
         }
+        .success-msg {
+            color: var(--accent-green);
+            font-size: 12px;
+            margin-top: 12px;
+            display: none;
+        }
 
-        /* APLICAÇÃO PRINCIPAL (INICIALMENTE OCULTA) */
+        /* APLICAÇÃO PRINCIPAL */
         #main-app { display: none; }
 
-        /* HEADER / NAVBAR */
         header {
             background: rgba(11, 19, 43, 0.95);
             backdrop-filter: blur(10px);
@@ -114,212 +125,100 @@
             align-items: center;
             border-bottom: 1px solid var(--border-subtle);
             position: sticky;
-            top: 0;
-            z-index: 1000;
+            top: 0; z-index: 1000;
         }
         .logo-area { 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            font-weight: 800; 
-            font-size: 16px; 
-            letter-spacing: 1.5px; 
-            cursor: pointer; 
-            color: #fff;
+            display: flex; align-items: center; gap: 12px; 
+            font-weight: 800; font-size: 16px; letter-spacing: 1.5px; 
+            cursor: pointer; color: #fff;
         }
         .nav-links { display: flex; gap: 8px; font-size: 12px; font-weight: 700; align-items: center; }
         .nav-links a { 
-            color: var(--text-muted); 
-            text-decoration: none; 
-            cursor: pointer; 
-            padding: 8px 14px; 
-            border-radius: 6px; 
-            transition: all 0.2s ease;
-            letter-spacing: 0.5px;
+            color: var(--text-muted); text-decoration: none; cursor: pointer; 
+            padding: 8px 14px; border-radius: 6px; transition: all 0.2s ease;
         }
         .nav-links a:hover { color: #fff; background: rgba(255, 255, 255, 0.05); }
         .nav-links a.active { color: #fff; background: var(--accent-blue); box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4); }
 
-        /* LAYOUT PRINCIPAL (HOME) */
         .wrapper {
-            max-width: 1240px;
-            margin: 35px auto;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: 1fr 340px;
-            gap: 30px;
+            max-width: 1240px; margin: 35px auto; padding: 0 20px;
+            display: grid; grid-template-columns: 1fr 340px; gap: 30px;
         }
 
-        /* HERO / BANNER */
         .hero-section {
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(11, 19, 43, 0.95)), center/cover;
-            border-radius: 14px;
-            padding: 40px;
-            border: 1px solid var(--border-subtle);
-            margin-bottom: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            position: relative;
-            overflow: hidden;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(11, 19, 43, 0.95));
+            border-radius: 14px; padding: 40px; border: 1px solid var(--border-subtle);
+            margin-bottom: 25px; position: relative; overflow: hidden;
         }
         .hero-section::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 4px; height: 100%;
-            background: var(--accent-gold);
+            content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent-gold);
         }
         .hero-section h2 { font-size: 13px; margin: 0 0 8px 0; color: var(--accent-gold); letter-spacing: 2px; text-transform: uppercase; }
-        .hero-section h1 { font-size: 32px; margin: 0 0 12px 0; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+        .hero-section h1 { font-size: 32px; margin: 0 0 12px 0; font-weight: 800; text-transform: uppercase; }
         .hero-section p { font-size: 14px; color: var(--text-muted); max-width: 600px; line-height: 1.6; margin-bottom: 25px; }
         
         .btn-action-main {
-            background: var(--accent-gold);
-            color: #000;
-            padding: 12px 25px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 13px;
-            letter-spacing: 0.5px;
+            background: var(--accent-gold); color: #000; padding: 12px 25px;
+            border: none; border-radius: 6px; font-weight: 700; cursor: pointer; transition: all 0.2s;
         }
-        .btn-action-main:hover { background: #e09206; transform: translateY(-1px); }
+        .btn-action-main:hover { background: #e09206; }
 
-        /* GRID DE CARDS */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
+        .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
         .card-item {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            padding: 24px;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            background: var(--bg-card); border: 1px solid var(--border-subtle);
+            padding: 24px; border-radius: 12px; cursor: pointer; transition: all 0.25s ease;
         }
-        .card-item:hover { 
-            border-color: var(--accent-blue); 
-            background: var(--bg-card-hover);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-        }
-        .card-item h3 { margin: 0 0 10px 0; font-size: 16px; display: flex; align-items: center; gap: 10px; color: #f8fafc; font-weight: 700; }
+        .card-item:hover { border-color: var(--accent-blue); background: var(--bg-card-hover); transform: translateY(-3px); }
+        .card-item h3 { margin: 0 0 10px 0; font-size: 16px; color: #f8fafc; display: flex; align-items: center; gap: 10px; }
         .card-item p { margin: 0; font-size: 13px; color: var(--text-muted); line-height: 1.5; }
 
-        /* PAINEL DIREITO */
         .sidebar-right {
-            background: var(--bg-card);
-            border-radius: 14px;
-            padding: 24px;
-            border: 1px solid var(--border-subtle);
-            height: fit-content;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            background: var(--bg-card); border-radius: 14px; padding: 24px;
+            border: 1px solid var(--border-subtle); height: fit-content;
         }
-        .sidebar-right h3 { font-size: 12px; color: var(--accent-gold); text-transform: uppercase; border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px; margin-top: 0; letter-spacing: 1px; }
+        .sidebar-right h3 { font-size: 12px; color: var(--accent-gold); text-transform: uppercase; border-bottom: 1px solid var(--border-subtle); padding-bottom: 10px; margin-top: 0; }
         .agent-info-row { font-size: 13px; margin: 15px 0; color: var(--text-muted); line-height: 1.6; }
 
-        /* SEÇÃO INSTITUCIONAL */
-        .view-institucional {
-            display: none;
-            max-width: 1040px;
-            margin: 35px auto;
-            background: var(--bg-card);
-            border-radius: 14px;
-            padding: 35px;
-            border: 1px solid var(--border-subtle);
-            box-shadow: 0 12px 35px rgba(0,0,0,0.4);
-        }
-        .sub-nav-inst {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 30px;
-            border-bottom: 1px solid var(--border-subtle);
-            padding-bottom: 15px;
-        }
-        .btn-tab {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-muted);
-            border: 1px solid var(--border-subtle);
-            padding: 10px 22px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 13px;
-            transition: all 0.2s;
-        }
-        .btn-tab:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
-        .btn-tab.active { background: var(--accent-blue); color: white; border-color: var(--accent-blue); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4); }
-        
-        .inst-content { display: none; font-size: 14px; line-height: 1.7; color: #cbd5e1; max-height: 650px; overflow-y: auto; padding-right: 15px; }
-        .inst-content.active { display: block; }
-        .inst-content h3 { color: #f8fafc; margin-top: 30px; font-size: 17px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 8px; font-weight: 700; }
-
-        /* SEÇÃO DE FORMULÁRIOS */
-        .view-form {
-            display: none;
-            max-width: 1080px;
-            margin: 35px auto;
-            background: #111827;
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-            border: 1px solid var(--border-subtle);
-        }
-        .ficha-branca { 
-            background-color: #f8fafc; 
-            color: #0f172a; 
-            width: 62%; 
-            padding: 35px; 
-            min-height: 820px; 
-            overflow-y: auto; 
-            box-shadow: inset -5px 0 15px rgba(0,0,0,0.05);
-        }
-        .ficha-branca h1 { font-size: 22px; margin: 0 0 8px 0; font-weight: 800; color: #0f172a; }
-        .linha-divisora { border-bottom: 2px solid #cbd5e1; margin-bottom: 22px; }
-        .info-linha { margin: 14px 0; font-size: 13.5px; font-weight: 700; display: flex; align-items: center; flex-wrap: wrap; color: #1e293b; }
-        .input-campo { border: none; border-bottom: 1.5px dashed #94a3b8; font-size: 13.5px; outline: none; padding: 3px 6px; font-family: inherit; flex: 1; margin-left: 6px; background: rgba(255,255,255,0.7); color: #0f172a; border-radius: 4px 4px 0 0; }
-        .input-campo:focus { border-bottom-color: var(--accent-blue); background: #fff; }
-        .select-campo { border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13.5px; padding: 5px 8px; font-family: inherit; margin-left: 6px; background: white; color: #0f172a; outline: none; }
-        .textarea-relatorio { width: 100%; border: 1.5px dashed #cbd5e1; border-radius: 8px; padding: 12px; font-family: inherit; font-size: 13px; margin-top: 8px; resize: vertical; outline: none; background: #fff; color: #0f172a; }
-        
-        .painel-direito-calc { width: 38%; display: flex; flex-direction: column; padding: 35px; gap: 18px; background: #0b132b; border-left: 1px solid var(--border-subtle); }
-        .btn-voltar { background: rgba(255,255,255,0.08); color: white; border: 1px solid var(--border-subtle); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 700; margin-bottom: 10px; width: fit-content; }
+        /* VIEWS DE FORMULÁRIO / CONTEÚDO */
+        .view-section { display: none; max-width: 1040px; margin: 35px auto; background: var(--bg-card); border-radius: 14px; padding: 35px; border: 1px solid var(--border-subtle); }
+        .btn-voltar { background: rgba(255,255,255,0.08); color: white; border: 1px solid var(--border-subtle); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 700; margin-bottom: 20px; }
         .btn-voltar:hover { background: rgba(255,255,255,0.15); }
-
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
     </style>
 </head>
 <body onload="inicializarSistema()">
 
-<!-- TELA 1: LOGIN POR USUÁRIO E SENHA (BANCO DE DADOS / CREDENCIAIS) -->
+<!-- TELA DE LOGIN / CADASTRO -->
 <div id="auth-screen">
     <div class="box-login">
-        <h1>POLÍCIA CIVIL</h1>
+        <h1 id="auth-title">POLÍCIA CIVIL</h1>
         <h2>ESTADO DE SAN ANDREAS</h2>
         
+        <div class="input-login-group" id="group-nome" style="display: none;">
+            <label>Nome Completo / Agente</label>
+            <input type="text" id="input-nome" placeholder="Seu nome">
+        </div>
+
         <div class="input-login-group">
-            <label>Usuário / Identificação</label>
-            <input type="text" id="db-user" placeholder="Digite seu usuário">
+            <label>Usuário</label>
+            <input type="text" id="input-user" placeholder="Digite seu usuário">
         </div>
         
         <div class="input-login-group">
             <label>Senha</label>
-            <input type="password" id="db-pass" placeholder="••••••••">
+            <input type="password" id="input-pass" placeholder="••••••••">
         </div>
 
-        <button class="btn-entrar" onclick="fazerLoginSistema()">ACESSAR PAINEL</button>
-        <div id="login-error" class="error-msg">Usuário ou senha incorretos.</div>
+        <button class="btn-entrar" id="btn-submit-auth" onclick="executarAcaoAuth()">ACESSAR PAINEL</button>
+        
+        <div id="auth-error" class="error-msg"></div>
+        <div id="auth-success" class="success-msg"></div>
+
+        <button class="btn-toggle-mode" id="btn-switch-mode" onclick="alternarModoRegistro()">Não tem uma conta? Crie uma agora</button>
     </div>
 </div>
 
-<!-- APLICAÇÃO PRINCIPAL (SÓ APARECE APÓS O LOGIN NO BANCO E AUTENTICAÇÃO DO DISCORD) -->
+<!-- APLICAÇÃO PRINCIPAL -->
 <div id="main-app">
-    <!-- HEADER -->
     <header>
         <div class="logo-area" onclick="mostrarHome()">
             <span>POLÍCIA CIVIL — SAN ANDREAS</span>
@@ -327,40 +226,28 @@
         <div class="nav-links">
             <a onclick="mostrarHome()" class="active" id="nav-home">INÍCIO</a>
             <a onclick="abrirInstitucional()" id="nav-inst">INSTITUCIONAL</a>
-            <a onclick="abrirFormularioPorte()" id="nav-porte">PORTE DE ARMAS</a>
-            <a onclick="abrirFormularioBO()" id="nav-bo">FORMULÁRIO / B.O.</a>
-            <a onclick="abrirFormularioSet()" id="nav-set">PEDIR SET</a>
             <a href="https://discord.gg/SEU_DISCORD_AQUI" target="_blank" style="color: #60a5fa;">DISCORD</a>
             <a onclick="sairSistema()" style="color: #ff4757;">SAIR</a>
         </div>
     </header>
 
-    <!-- TELA HOME -->
     <div id="view-home" class="wrapper">
         <div>
             <div class="hero-section">
                 <h2>DEPARTAMENTO DE POLÍCIA CIVIL</h2>
                 <h1>INVESTIGAÇÃO, RIGOR E JUSTIÇA</h1>
-                <p>Sistema oficial unificado de investigações, registros de ocorrências e controle administrativo da corporação no Estado de San Andreas.</p>
-                <button class="btn-action-main" onclick="abrirFormularioBO()">ABRIR REGISTRO DE OCORRÊNCIA</button>
+                <p>Sistema oficial unificado de investigações e controle administrativo da corporação.</p>
+                <button class="btn-action-main" onclick="alert('Funcionalidade em desenvolvimento')">NOVA OCORRÊNCIA</button>
             </div>
 
             <div class="cards-grid">
                 <div class="card-item" onclick="abrirInstitucional()">
                     <h3>📋 Manual Institucional</h3>
-                    <p>Consulte diretrizes, atribuições de cargos, sub-divisões e normas operacionais.</p>
-                </div>
-                <div class="card-item" onclick="abrirFormularioBO()">
-                    <h3>⚖️ Registro de Ocorrência & B.O.</h3>
-                    <p>Preencha formulários de ocorrências e envie direto para os registros oficiais.</p>
-                </div>
-                <div class="card-item" onclick="abrirFormularioSet()">
-                    <h3>👤 Solicitação de Set</h3>
-                    <p>Requerimentos de patentes, promoções e atualização de cadastro de agentes.</p>
+                    <p>Consulte diretrizes, atribuições de cargos e normas operacionais.</p>
                 </div>
                 <div class="card-item" onclick="window.open('https://discord.gg/SEU_DISCORD_AQUI', '_blank')">
-                    <h3>🎧 Ouvidoria & Suporte</h3>
-                    <p>Canal aberto para denúncias internas, diretoria e ouvidoria geral.</p>
+                    <h3>🎧 Suporte & Ouvidoria</h3>
+                    <p>Canal de comunicação interno e suporte com a diretoria.</p>
                 </div>
             </div>
         </div>
@@ -368,183 +255,108 @@
         <div class="sidebar-right">
             <h3>Credenciais do Agente</h3>
             <div style="display: flex; align-items: center; gap: 12px; margin: 15px 0;" id="user-status-box">
-                <!-- Informações injetadas via JavaScript -->
+                <!-- Preenchido via JS -->
             </div>
             <div class="agent-info-row" style="font-size: 12px; border-top: 1px solid var(--border-subtle); padding-top: 12px;">
-                Usuários novos entram com cargo de <strong>Visitante</strong> até que a administração ajuste as permissões.
+                Novos cadastros entram automaticamente como <strong>Visitante</strong> até aprovação da administração.
             </div>
         </div>
     </div>
 
-    <!-- TELA INSTITUCIONAL -->
-    <div id="view-institucional" class="view-institucional">
+    <div id="view-institucional" class="view-section">
         <button class="btn-voltar" onclick="mostrarHome()">← Voltar ao Início</button>
-        <div class="sub-nav-inst">
-            <button class="btn-tab active" id="btn-tab-sobre" onclick="mudarAbaInst('sobre')">Sobre a Polícia Civil</button>
-            <button class="btn-tab" id="btn-tab-cursos" onclick="mudarAbaInst('cursos')">Sub-divisões e Cursos</button>
-        </div>
-        <div id="inst-sobre" class="inst-content active">
-            <h2>Sobre a Polícia Civil</h2>
-            <p>A Polícia Civil atua nas funções investigativa e tática no Estado de San Andreas.</p>
-        </div>
-        <div id="inst-cursos" class="inst-content">
-            <h2>Sub-divisões e Cursos</h2>
-            <p>Conteúdo das sub-divisões e operações táticas.</p>
-        </div>
-    </div>
-
-    <!-- TELA DE PORTE DE ARMAS -->
-    <div id="view-porte" class="view-form">
-        <div style="display: flex; width: 100%;">
-            <div class="ficha-branca">
-                <button class="btn-voltar" style="background:#1e293b; color:#fff; border:none;" onclick="mostrarHome()">← Voltar ao Início</button>
-                <h1>Polícia Civil - Certificado de Porte de Armas</h1>
-                <div class="linha-divisora"></div>
-                <div class="info-linha">👤 Nome do Requerente*: <input type="text" id="porte-nome" class="input-campo" placeholder="Nome completo"></div>
-                <div class="info-linha">📄 Passaporte / RG*: <input type="text" id="porte-rg" class="input-campo" placeholder="Passaporte"></div>
-                <div class="info-linha">
-                    🏷️ Tipo de Porte*: 
-                    <select id="porte-tipo" class="select-campo">
-                        <option value="Porte de Defesa / Uso Permitido">Porte de Defesa / Uso Permitido</option>
-                        <option value="Porte Especial / Uso Restrito">Porte Especial / Uso Restrito</option>
-                    </select>
-                </div>
-                <div style="margin-top: 18px; border-top: 1.5px solid #cbd5e1; padding-top: 12px;">
-                    <label style="font-size: 13.5px; font-weight: 700; display: block; color: #0f172a;">📝 Parecer Técnico:</label>
-                    <textarea id="porte-parecer" class="textarea-relatorio" rows="6" placeholder="Insira o parecer..."></textarea>
-                </div>
-            </div>
-            <div class="painel-direito-calc">
-                <button style="background: #10b981; color: white; border: none; border-radius: 8px; height: 48px; font-weight: 700; cursor: pointer; margin-top: auto;" onclick="enviarFormulario('porte')">Emitir e Enviar Porte</button>
-                <button style="background: rgba(255,255,255,0.08); color: white; border: 1px solid var(--border-subtle); border-radius: 8px; height: 38px; font-weight: 700; cursor: pointer;" onclick="mostrarHome()">Cancelar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- FORMULÁRIO DE OCORRÊNCIA / B.O. -->
-    <div id="view-bo" class="view-form">
-        <div style="display: flex; width: 100%;">
-            <div class="ficha-branca">
-                <button class="btn-voltar" style="background:#1e293b; color:#fff; border:none;" onclick="mostrarHome()">← Voltar ao Início</button>
-                <h1>Polícia Civil - Registro de Ocorrência</h1>
-                <div class="linha-divisora"></div>
-                <div class="info-linha">📅 Data: <input type="text" id="inData" class="input-campo"> 🕒 Hora: <input type="text" id="inHora" class="input-campo"></div>
-                <div class="info-linha">👮‍♂️ Oficial*: <input type="text" id="inPrisaoPor" class="input-campo"> 🆔 Passaporte*: <input type="text" id="idPolicial" class="input-campo" style="max-width: 65px;"></div>
-                <div class="info-linha">
-                    🏢 Divisão*: 
-                    <select id="inUnidade" class="select-campo">
-                        <option value="Polícia Civil">Polícia Civil</option>
-                        <option value="GARRA">GARRA</option>
-                        <option value="GOE">GOE</option>
-                    </select>
-                </div>
-                <div class="info-linha">📢 Denunciante*: <input type="text" id="inDenunciante" class="input-campo"> 🆔 Passaporte*: <input type="text" id="idDenunciante" class="input-campo" style="max-width: 85px;"></div>
-                <div class="info-linha">⚖️ Advogado: <input type="text" id="inAdvogado" class="input-campo"> 🆔 Passaporte: <input type="text" id="idAdvogado" class="input-campo" style="max-width: 85px;"></div>
-                <div style="margin-top: 18px; border-top: 1.5px solid #cbd5e1; padding-top: 12px;">
-                    <div class="info-linha">👤 Suspeito: <input type="text" id="inNome" class="input-campo"> 🆔 Passaporte: <input type="text" id="inPass" class="input-campo" style="max-width: 85px;"></div>
-                    <label style="font-size: 13.5px; font-weight: 700; margin-top: 12px; display: block; color: #1e293b;">📝 Relatório:</label>
-                    <textarea id="inRelatorio" class="textarea-relatorio" rows="6" placeholder="Descreva..."></textarea>
-                </div>
-            </div>
-            <div class="painel-direito-calc">
-                <button style="background: #10b981; color: white; border: none; border-radius: 8px; height: 45px; font-weight: 700; cursor: pointer; margin-top: auto;" onclick="enviarFormulario('bo')">Enviar Ocorrência</button>
-                <button style="background: rgba(255,255,255,0.08); color: white; border: 1px solid var(--border-subtle); border-radius: 8px; height: 38px; font-weight: 700; cursor: pointer;" onclick="mostrarHome()">Cancelar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- FORMULÁRIO DE PEDIR SET -->
-    <div id="view-set" class="view-form">
-        <div style="display: flex; width: 100%;">
-            <div class="ficha-branca">
-                <button class="btn-voltar" style="background:#1e293b; color:#fff; border:none;" onclick="mostrarHome()">← Voltar ao Início</button>
-                <h1>Polícia Civil - Solicitação de Set</h1>
-                <div class="linha-divisora"></div>
-                <div class="info-linha">👤 Nome*: <input type="text" id="setTitleNome" class="input-campo"></div>
-                <div class="info-linha">🆔 Passaporte*: <input type="text" id="setTitlePass" class="input-campo"></div>
-                <div class="info-linha">🤝 Recrutador*: <input type="text" id="setTitleRecrutador" class="input-campo"></div>
-                <div class="info-linha">📅 Data/Hora*: <input type="datetime-local" id="setTitleDataHora" class="input-campo"></div>
-                <div class="info-linha">
-                    ⭐ Patente*: 
-                    <select id="setTitlePatente" class="select-campo" onchange="verificarOutraPatente()">
-                        <option value="CADEPOL">CADEPOL</option>
-                        <option value="Outras">Outras</option>
-                    </select>
-                </div>
-                <div class="info-linha" id="campo-outra-patente" style="display: none;">
-                    ✍️ Especifique*: <input type="text" id="setTitleOutra" class="input-campo">
-                </div>
-            </div>
-            <div class="painel-direito-calc">
-                <button style="background: #10b981; color: white; border: none; border-radius: 8px; height: 48px; font-weight: 700; cursor: pointer; margin-top: auto;" onclick="enviarFormulario('set')">Enviar Pedido de Set</button>
-                <button style="background: rgba(255,255,255,0.08); color: white; border: 1px solid var(--border-subtle); border-radius: 8px; height: 38px; font-weight: 700; cursor: pointer;" onclick="mostrarHome()">Cancelar</button>
-            </div>
-        </div>
+        <h2>Manual Institucional</h2>
+        <p>Diretrizes e regulamentos internos da Polícia Civil de San Andreas.</p>
     </div>
 </div>
 
 <script>
     const DISCORD_CLIENT_ID = "1482774609685119187";
     const REDIRECT_URI = encodeURIComponent(window.location.origin + window.location.pathname);
+    let modoRegistro = false;
 
-    // Lista fixa de exemplo de usuários/senhas do banco. (No futuro, você pode substituir por uma integração com API ou banco real).
-    const usuariosBDAutorizados = {
-        "admin": "123456",
-        "delegado": "senha123"
-    };
-
-    function inicializarSistema() {
-        const fragment = new URLSearchParams(window.location.hash.slice(1));
-        const token = fragment.get('access_token');
-        const dbUserLogado = sessionStorage.getItem('db_usuario_logado');
-
-        if (dbUserLogado) {
-            if (token) {
-                // Se já passou pelo login do DB e agora voltou do Discord com o token
-                window.history.replaceState({}, document.title, window.location.pathname);
-                
-                fetch('https://discord.com/api/users/@me', { headers: { authorization: `Bearer ${token}` } })
-                .then(res => res.json())
-                .then(user => {
-                    sessionStorage.setItem('discord_user_data', JSON.stringify(user));
-                    liberarPainelPrincipal(dbUserLogado, user);
-                }).catch(() => {
-                    alert("Erro ao verificar dados do Discord.");
-                    sairSistema();
-                });
-            } else {
-                // Tenta ver se já tem os dados do Discord salvos na sessão
-                const discordUser = JSON.parse(sessionStorage.getItem('discord_user_data') || 'null');
-                if (discordUser) {
-                    liberarPainelPrincipal(dbUserLogado, discordUser);
-                } else {
-                    // Passou pelo banco, mas falta autenticar no Discord agora
-                    dispararLoginDiscord();
-                }
-            }
-        } else {
-            // Mostra apenas a tela de login inicial do Banco de Dados
-            document.getElementById('auth-screen').style.display = 'flex';
-            document.getElementById('main-app').style.display = 'none';
+    async function carregarBaseUsuarios() {
+        try {
+            const resposta = await fetch('usuarios.json?t=' + new Date().getTime());
+            if (!resposta.ok) return {};
+            return await resposta.json();
+        } catch (e) {
+            return { "admin": { senha: "123", cargo: "Administrador", nome: "Admin" } };
         }
-        atualizarDataHora();
     }
 
-    function fazerLoginSistema() {
-        const usuarioInput = document.getElementById('db-user').value.trim();
-        const senhaInput = document.getElementById('db-pass').value.trim();
-        const erroBox = document.getElementById('login-error');
+    async function inicializarSistema() {
+        const fragment = new URLSearchParams(window.location.hash.slice(1));
+        const token = fragment.get('access_token');
+        const usuarioLogado = sessionStorage.getItem('usuario_logado');
 
-        // Validação simples com o "banco" local de credenciais
-        if (usuariosBDAutorizados[usuarioInput] && usuariosBDAutorizados[usuarioInput] === senhaInput) {
-            erroBox.style.display = 'none';
-            // Salva na sessão que o login em usuário/senha passou
-            sessionStorage.setItem('db_usuario_logado', usuarioInput);
+        if (usuarioLogado) {
+            const usuarios = await carregarBaseUsuarios();
+            const dadosUsuario = usuarios[usuarioLogado] || { cargo: "Visitante", nome: usuarioLogado };
+
+            if (token) {
+                window.history.replaceState({}, document.title, window.location.pathname);
+                fetch('https://discord.com/api/users/@me', { headers: { authorization: `Bearer ${token}` } })
+                .then(res => res.json())
+                .then(discordUser => {
+                    sessionStorage.setItem('discord_user', JSON.stringify(discordUser));
+                    liberarPainel(usuarioLogado, dadosUsuario.cargo, discordUser);
+                }).catch(() => liberarPainel(usuarioLogado, dadosUsuario.cargo, null));
+            } else {
+                const discordUser = JSON.parse(sessionStorage.getItem('discord_user') || 'null');
+                liberarPainel(usuarioLogado, dadosUsuario.cargo, discordUser);
+            }
+        }
+    }
+
+    function alternarModoRegistro() {
+        modoRegistro = !modoRegistro;
+        document.getElementById('group-nome').style.display = modoRegistro ? 'block' : 'none';
+        document.getElementById('btn-submit-auth').innerText = modoRegistro ? 'CADASTRAR E REGISTRAR' : 'ACESSAR PAINEL';
+        document.getElementById('btn-switch-mode').innerText = modoRegistro ? 'Já tem uma conta? Faça login' : 'Não tem uma conta? Crie uma agora';
+        document.getElementById('auth-error').style.display = 'none';
+        document.getElementById('auth-success').style.display = 'none';
+    }
+
+    async function executarAcaoAuth() {
+        const user = document.getElementById('input-user').value.trim();
+        const pass = document.getElementById('input-pass').value.trim();
+        const nome = document.getElementById('input-nome').value.trim();
+        const errorBox = document.getElementById('auth-error');
+        const successBox = document.getElementById('auth-success');
+
+        errorBox.style.display = 'none';
+        successBox.style.display = 'none';
+
+        if (!user || !pass || (modoRegistro && !nome)) {
+            errorBox.innerText = "Preencha todos os campos obrigatórios.";
+            errorBox.style.display = 'block';
+            return;
+        }
+
+        let usuarios = await carregarBaseUsuarios();
+
+        if (modoRegistro) {
+            if (usuarios[user]) {
+                errorBox.innerText = "Este usuário já existe. Escolha outro.";
+                errorBox.style.display = 'block';
+                return;
+            }
+            // Como estamos no GitHub Pages (estático), avisamos o usuário para salvar no arquivo JSON
+            successBox.innerHTML = `Cadastro simulado com sucesso! Salve a linha abaixo no seu arquivo <b>usuarios.json</b> no GitHub:<br><br><code>"${user}": {"senha": "${pass}", "cargo": "Visitante", "nome": "${nome}"}</code>`;
+            successBox.style.display = 'block';
             
-            // Etapa seguinte: Redirecionar para a autenticação do Discord
-            dispararLoginDiscord();
+            // Salva na sessão para prosseguir para o Discord
+            sessionStorage.setItem('usuario_logado', user);
+            setTimeout(() => dispararLoginDiscord(), 4000);
         } else {
-            erroBox.style.display = 'block';
+            if (usuarios[user] && usuarios[user].senha === pass) {
+                sessionStorage.setItem('usuario_logado', user);
+                dispararLoginDiscord();
+            } else {
+                errorBox.innerText = "Usuário ou senha incorretos.";
+                errorBox.style.display = 'block';
+            }
         }
     }
 
@@ -553,15 +365,23 @@
         window.location.href = authUrl;
     }
 
-    function liberarPainelPrincipal(usuarioDB, discordUser) {
+    function liberarPainel(usuario, cargo, discordUser) {
         document.getElementById('auth-screen').style.display = 'none';
         document.getElementById('main-app').style.display = 'block';
 
+        let avatarHtml = `<div style="width: 38px; height: 38px; border-radius: 50%; background: var(--accent-blue); display: flex; align-items: center; justify-content: center; font-weight: bold;">${usuario[0].toUpperCase()}</div>`;
+        let discordName = discordUser ? discordUser.username : usuario;
+
+        if (discordUser && discordUser.avatar) {
+            avatarHtml = `<img style="width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--accent-blue);" src="https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png">`;
+        }
+
         document.getElementById('user-status-box').innerHTML = `
-            <img style="width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--accent-blue);" src="https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png">
+            ${avatarHtml}
             <div>
-                <div style="font-size: 11px; color: var(--text-muted);">Conta: <strong>${usuarioDB}</strong></div>
-                <strong style="font-size: 13px; color: #fff;">${discordUser.username}</strong> <span style="color:var(--accent-gold); font-size:11px;">(Visitante)</span>
+                <div style="font-size: 11px; color: var(--text-muted);">ID: <strong>${usuario}</strong></div>
+                <strong style="font-size: 13px; color: #fff;">${discordName}</strong> <br>
+                <span style="color:var(--accent-gold); font-size:11px;">(${cargo})</span>
             </div>
         `;
     }
@@ -572,88 +392,18 @@
         window.location.href = window.location.pathname;
     }
 
-    function enviarFormulario(tipo) {
-        const discordUser = JSON.parse(sessionStorage.getItem('discord_user_data') || '{}');
-        alert(`Formulário (${tipo.toUpperCase()}) enviado com sucesso por ${discordUser.username || 'Agente'}!`);
-        mostrarHome();
-    }
-
-    function esconderTudo() {
-        document.getElementById('view-home').style.display = 'none';
-        document.getElementById('view-institucional').style.display = 'none';
-        document.getElementById('view-bo').style.display = 'none';
-        document.getElementById('view-set').style.display = 'none';
-        document.getElementById('view-porte').style.display = 'none';
-        
-        document.getElementById('nav-home').classList.remove('active');
-        document.getElementById('nav-inst').classList.remove('active');
-        document.getElementById('nav-bo').classList.remove('active');
-        document.getElementById('nav-set').classList.remove('active');
-        document.getElementById('nav-porte').classList.remove('active');
-    }
-
     function mostrarHome() {
-        esconderTudo();
         document.getElementById('view-home').style.display = 'grid';
+        document.getElementById('view-institucional').style.display = 'none';
         document.getElementById('nav-home').classList.add('active');
+        document.getElementById('nav-inst').classList.remove('active');
     }
 
     function abrirInstitucional() {
-        esconderTudo();
+        document.getElementById('view-home').style.display = 'none';
         document.getElementById('view-institucional').style.display = 'block';
         document.getElementById('nav-inst').classList.add('active');
-    }
-
-    function mudarAbaInst(aba) {
-        const sobre = document.getElementById('inst-sobre');
-        const cursos = document.getElementById('inst-cursos');
-        const btnSobre = document.getElementById('btn-tab-sobre');
-        const btnCursos = document.getElementById('btn-tab-cursos');
-
-        if (aba === 'sobre') {
-            sobre.classList.add('active');
-            cursos.classList.remove('active');
-            btnSobre.classList.add('active');
-            btnCursos.classList.remove('active');
-        } else {
-            cursos.classList.add('active');
-            sobre.classList.remove('active');
-            btnCursos.classList.add('active');
-            btnSobre.classList.remove('active');
-        }
-    }
-
-    function abrirFormularioBO() {
-        esconderTudo();
-        document.getElementById('view-bo').style.display = 'block';
-        document.getElementById('nav-bo').classList.add('active');
-    }
-
-    function abrirFormularioPorte() {
-        esconderTudo();
-        document.getElementById('view-porte').style.display = 'block';
-        document.getElementById('nav-porte').classList.add('active');
-    }
-
-    function abrirFormularioSet() {
-        esconderTudo();
-        document.getElementById('view-set').style.display = 'block';
-        document.getElementById('nav-set').classList.add('active');
-    }
-
-    function verificarOutraPatente() {
-        const select = document.getElementById('setTitlePatente').value;
-        const campoOutra = document.getElementById('campo-outra-patente');
-        campoOutra.style.display = (select === 'Outras') ? 'flex' : 'none';
-        if (select !== 'Outras') document.getElementById('setTitleOutra').value = '';
-    }
-
-    function atualizarDataHora() {
-        const agora = new Date();
-        const elData = document.getElementById('inData');
-        const elHora = document.getElementById('inHora');
-        if (elData) elData.value = agora.toLocaleDateString('pt-BR');
-        if (elHora) elHora.value = agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+        document.getElementById('nav-home').classList.remove('active');
     }
 </script>
 </body>
