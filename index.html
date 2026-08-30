@@ -358,7 +358,6 @@
             <a onclick="mostrarHome()" class="active" id="nav-home">INÍCIO</a>
             <a onclick="abrirInstitucional()" id="nav-inst">INSTITUCIONAL</a>
             <a onclick="mostrarHome()">LEGISLAÇÃO</a>
-            <a onclick="abrirFormularioPorte()" id="nav-porte">PORTE DE ARMAS</a>
             <a onclick="abrirFormularioBO()" id="nav-bo">FORMULÁRIO / B.O.</a>
             <a onclick="abrirFormularioSet()" id="nav-set">PEDIR SET</a>
             <!-- 🔗 COLOQUE O LINK DO DISCORD ABAIXO -->
@@ -508,6 +507,47 @@
             <p style="margin-top: 25px;"><em>Disposição Geral: As Sub-Divisões representam especialidades e não substituem a Hierarquia de Cargos ou Funções.</em></p>
         </div>
     </div>
+
+
+    <!-- TELA DE PORTE DE ARMAS -->
+    <div id="view-porte" class="view-form">
+        <div style="display: flex; width: 100%;">
+            <div class="ficha-branca">
+                <button class="btn-voltar" style="background:#1e293b; color:#fff; border:none;" onclick="mostrarHome()">← Voltar ao Início</button>
+                <h1>
+                    <img src="https://i.imgur.com/SUA_LOGO_AQUI.png" style="width: 35px; height: 35px;" alt="Logo"> 
+                    Polícia Civil - Certificado de Porte de Armas
+                </h1>
+                <div class="linha-divisora"></div>
+    
+                <div class="info-linha">👤 Nome do Requerente*: <input type="text" id="porte-nome" class="input-campo" placeholder="Nome completo"></div>
+                <div class="info-linha">📄 Passaporte / RG*: <input type="text" id="porte-rg" class="input-campo" placeholder="Passaporte"></div>
+            
+                <div class="info-linha">
+                    🏷️ Tipo de Porte*: 
+                    <select id="porte-tipo" class="select-campo">
+                        <option value="Porte de Defesa / Uso Permitido">Porte de Defesa / Uso Permitido</option>
+                        <option value="Porte Especial / Uso Restrito">Porte Especial / Uso Restrito</option>
+                    </select>
+                </div>
+
+                <div style="margin-top: 18px; border-top: 1.5px solid #cbd5e1; padding-top: 12px;">
+                    <label style="font-size: 13.5px; font-weight: 700; margin-top: 12px; display: block; color: #0f172a;">📝 Parecer Técnico / Observações:</label>
+                    <textarea id="porte-parecer" class="textarea-relatorio" rows="6" placeholder="Insira o parecer técnico ou justificativa para emissão do porte..."></textarea>
+                </div>
+            </div>
+    
+            <div class="painel-direito-calc">
+                <img src="https://i.imgur.com/SEU_BANNER_AQUI.png" style="width: 100%; height: 120px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border-subtle);" alt="Banner">
+                <div style="background: rgba(15, 23, 42, 0.7); padding: 15px; border-radius: 8px; font-size: 12px; color: var(--text-muted); line-height: 1.4; border: 1px solid var(--border-subtle);">
+                    Emita o certificado de porte de armas e envie o registro oficial diretamente para o canal integrado no Discord.
+                </div>
+                <button style="background: #10b981; color: white; border: none; border-radius: 8px; height: 48px; font-weight: 700; cursor: pointer; margin-top: auto; font-size: 13.5px; transition: 0.2s;" onclick="enviarWebhookPorte()">Emitir e Enviar Porte</button>
+                <button style="background: rgba(255,255,255,0.08); color: white; border: 1px solid var(--border-subtle); border-radius: 8px; height: 38px; font-weight: 700; cursor: pointer;" onclick="mostrarHome()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
 
     <!-- TELA 1: FORMULÁRIO DE OCORRÊNCIA / B.O. -->
     <div id="view-bo" class="view-form">
@@ -834,10 +874,44 @@
         })
         .catch(() => alert("Erro de conexão."))
     }
-    function abrirFormularioPorte() {
-       esconderTudo();
-       document.getElementById('view-porte').style.display = 'block';
-       document.getElementById('nav-porte').classList.add('active');
+
+    function enviarWebhookPorte() {
+    const nome = document.getElementById('porte-nome').value;
+    const rg = document.getElementById('porte-rg').value;
+    const tipo = document.getElementById('porte-tipo').value;
+    const parecer = document.getElementById('porte-parecer').value;
+
+    if (!nome || !rg) {
+        alert("Preencha o nome e o passaporte do requerente do porte!");
+        return;
+    }
+
+    const payload = {
+        embeds: [{
+            title: "🔫 NOVO CERTIFICADO DE PORTE DE ARMAS EMITIDO",
+            color: 16711680,
+            fields: [
+                { name: "👤 Requerente", value: nome, inline: true },
+                { name: "📄 Passaporte / RG", value: rg, inline: true },
+                { name: "🏷️ Tipo de Porte", value: tipo, inline: false },
+                { name: "📝 Parecer Técnico", value: parecer || "Aprovado sem restrições.", inline: false }
+            ],
+            timestamp: new Date().toISOString()
+        }]
+    };
+
+    fetch(WEBHOOK_PORTE, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).then(res => {
+            if (res.ok) {
+                alert('Porte de Armas emitido e enviado com sucesso!');
+               mostrarHome();
+            } else {
+                alert('Erro ao emitir porte. Verifique o link do Webhook.');
+            }
+        });
     }
 </script>
 </body>
