@@ -932,6 +932,34 @@
             }
         });
     }
+    
+    function tentarLogarPlanilha() {
+    const usuarioInput = document.getElementById('input-user').value;
+    const senhaInput = document.getElementById('input-senha').value;
+    const urlGoogleScript = "https://script.google.com/macros/s/AKfycbzkLGiT9exHct3TOT3qbLePRi7AHRolBYcMNUdEiznpw3TmocuNECf4RbgC-62p0hlNzA/exec";
+
+    // Monta a URL enviando os dados via parâmetros GET
+    const urlFinal = `${urlGoogleScript}?usuario=${encodeURIComponent(usuarioInput)}&senha=${encodeURIComponent(senhaInput)}`;
+
+    fetch(urlFinal)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "sucesso") {
+                // Salva os dados da sessão no navegador
+                localStorage.setItem('usuario_logado', usuarioInput);
+                localStorage.setItem('cargo_usuario', data.cargo); // Ex: "Delegado", "Administrativo", etc.
+                
+                alert("Login efetuado com sucesso! Cargo: " + data.cargo);
+                location.reload(); // Recarrega para entrar no painel
+            } else {
+                alert("Erro: " + data.mensagem);
+            }
+        })
+        .catch(error => {
+            console.error("Erro na requisição:", error);
+            alert("Erro ao tentar conectar com o servidor de login.");
+        });
+}
 </script>
 </body>
 </html>
