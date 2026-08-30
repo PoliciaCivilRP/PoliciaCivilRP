@@ -462,83 +462,83 @@
 
     // Envio do Relatório de Porte de Arma (Otimizado com dados no content e title para busca rápida no Discord)
     async function enviarPorteArma() {
-    const errorBox = document.getElementById('porte-error');
-    const successBox = document.getElementById('porte-success');
-    errorBox.style.display = 'none';
-    successBox.style.display = 'none';
+        const errorBox = document.getElementById('porte-error');
+        const successBox = document.getElementById('porte-success');
+        errorBox.style.display = 'none';
+        successBox.style.display = 'none';
 
-    const cargoAtual = usuarioAtualDados.cargo;
-    if (cargoAtual !== "Delegado Adjunto" && cargoAtual !== "Delegado" && cargoAtual !== "Administrador Geral") {
-        errorBox.innerText = "Erro: Apenas Delegado Adjunto, Delegado e Administrador Geral podem emitir porte de arma.";
-        errorBox.style.display = 'block';
-        return;
-    }
+        const cargoAtual = usuarioAtualDados.cargo;
+        if (cargoAtual !== "Delegado Adjunto" && cargoAtual !== "Delegado" && cargoAtual !== "Administrador Geral") {
+           errorBox.innerText = "Erro: Apenas Delegado Adjunto, Delegado e Administrador Geral podem emitir porte de arma.";
+            errorBox.style.display = 'block';
+            return;
+        }
 
-    const nome = document.getElementById('porte-nome').value.trim();
-    const passaporte = document.getElementById('porte-passaporte').value.trim();
-    const placas = document.getElementById('porte-placas').value.trim();
-    const policial = document.getElementById('porte-policial').value.trim();
-    const datahora = document.getElementById('porte-datahora').value.trim();
+        const nome = document.getElementById('porte-nome').value.trim();
+        const passaporte = document.getElementById('porte-passaporte').value.trim();
+        const placas = document.getElementById('porte-placas').value.trim();
+        const policial = document.getElementById('porte-policial').value.trim();
+        const datahora = document.getElementById('porte-datahora').value.trim();
 
-    if (!nome || !passaporte || !placas || !policial || !datahora) {
-        errorBox.innerText = "Preencha todos os campos do formulário de porte de arma.";
-        errorBox.style.display = 'block';
-        return;
-    }
+        if (!nome || !passaporte || !placas || !policial || !datahora) {
+            errorBox.innerText = "Preencha todos os campos do formulário de porte de arma.";
+            errorBox.style.display = 'block';
+            return;
+        }
 
-    successBox.innerText = "Enviando relatório de forma segura...";
-    successBox.style.display = 'block';
+       successBox.innerText = "Enviando relatório de forma segura...";
+       successBox.style.display = 'block';
 
-    const discordIdPolicial = discordUserGlobal ? discordUserGlobal.id : "";
-    const mencaoPolicial = discordIdPolicial ? `<@${discordIdPolicial}>` : policial;
-
+        const discordIdPolicial = discordUserGlobal ? discordUserGlobal.id : "";
+        const mencaoPolicial = discordIdPolicial ? `<@${discordIdPolicial}>` : policial;
+    
     // Monta o payload do Discord que será processado no Back-end do Google
-    const payloadDiscord = {
-        content: `🔫 **Porte de Arma Emitido** | Solicitante: **${nome}** | Passaporte/ID: **${passaporte}** | Placas: **${placas}** | Responsável: ${mencaoPolicial}`,
-        embeds: [{
-            title: `Porte de Arma: ${nome} (ID: ${passaporte})`,
-            color: 16766720,
-            description: `Registro indexado para busca rápida por nome, passaporte ou placa.`,
-            fields: [
-                { name: "Nome do Solicitante", value: nome, inline: true },
-                { name: "Passaporte (ID)", value: passaporte, inline: true },
-                { name: "Placas de Veículos", value: placas, inline: false },
-                { name: "Policial Responsável", value: `${policial} (${mencaoPolicial})`, inline: true },
-                { name: "Data e Hora", value: datahora, inline: true }
-            ],
-            timestamp: new Date().toISOString()
-        }]
-    };
+        const payloadDiscord = {
+            content: `🔫 **Porte de Arma Emitido** | Solicitante: **${nome}** | Passaporte/ID: **${passaporte}** | Placas: **${placas}** | Responsável: ${mencaoPolicial}`,
+            embeds: [{
+                title: `Porte de Arma: ${nome} (ID: ${passaporte})`,
+                color: 16766720,
+                description: `Registro indexado para busca rápida por nome, passaporte ou placa.`,
+                fields: [
+                    { name: "Nome do Solicitante", value: nome, inline: true },
+                    { name: "Passaporte (ID)", value: passaporte, inline: true },
+                    { name: "Placas de Veículos", value: placas, inline: false },
+                    { name: "Policial Responsável", value: `${policial} (${mencaoPolicial})`, inline: true },
+                    { name: "Data e Hora", value: datahora, inline: true }
+                ],
+                timestamp: new Date().toISOString()
+            }]
+        };
 
-    try {
-        const res = await fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            body: JSON.stringify({
+        try {
+           const res = await fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({
                 action: 'enviar_porte',
                 usuarioLogado: sessionStorage.getItem('usuario_logado'),
                 payloadDiscord: payloadDiscord
-            })
-        });
+                })
+            });
         
-        const resultado = await res.json();
+            const resultado = await res.json();
 
-        if (resultado.status === 'sucesso') {
+            if (resultado.status === 'sucesso') {
             successBox.innerText = "Relatório de porte de arma enviado com sucesso!";
             document.getElementById('porte-nome').value = "";
             document.getElementById('porte-passaporte').value = "";
             document.getElementById('porte-placas').value = "";
             document.getElementById('porte-datahora').value = "";
-        } else {
+            } else {
+                successBox.style.display = 'none';
+                errorBox.innerText = resultado.mensagem || "Erro ao enviar relatório.";
+                errorBox.style.display = 'block';
+            }
+        } catch (err) {
             successBox.style.display = 'none';
-            errorBox.innerText = resultado.mensagem || "Erro ao enviar relatório.";
+            errorBox.innerText = "Falha de conexão com o servidor.";
             errorBox.style.display = 'block';
         }
-    } catch (err) {
-        successBox.style.display = 'none';
-        errorBox.innerText = "Falha de conexão com o servidor.";
-        errorBox.style.display = 'block';
     }
- }
 
     // Envio do Relatório de Pedir Set (Otimizado com dados no content e title para busca rápida no Discord)
     async function enviarPedirSet() {
