@@ -211,7 +211,7 @@
                     <input type="text" id="porte-placas" placeholder="Ex: ABC1234, XYZ9876">
                 </div>
                 <div class="input-login-group">
-                    <label>Policial Responsável pelo Registro (Preenchimento Automático via Login)</label>
+                    <label>Policial Responsável pelo Registro (Automático via Login)</label>
                     <input type="text" id="porte-policial" placeholder="Seu nome / patente" readonly style="background: rgba(15, 23, 42, 0.5); cursor: not-allowed;">
                 </div>
                 <div class="input-login-group">
@@ -240,7 +240,7 @@
                     <input type="text" id="set-passaporte" placeholder="ID do passaporte">
                 </div>
                 <div class="input-login-group">
-                    <label>ID do Discord (Preenchimento Automático via Login)</label>
+                    <label>ID do Discord (Automático via Login)</label>
                     <input type="text" id="set-discord-id" placeholder="Seu ID do Discord" readonly style="background: rgba(15, 23, 42, 0.5); cursor: not-allowed;">
                 </div>
                 <div class="input-login-group">
@@ -274,7 +274,7 @@
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyXSVN7wlFxF17RCKXnpO9LNCMzPqX4iiEKqErlDaVMFCvvOr4Z-onb9-JPL8ybHrA6Vg/exec";
     
     // Insira os Webhooks do Discord aqui:
-    const WEBHOOK_PORTE_URL = "https://discord.com/api/webhooks/1543490554032164985/kguveqHDpbbP_9NJxJFsSxkt6kfmDKT2bA7rL5oSQBbS7HkGgmZXE16oCUoWfESHzIqs";
+    const WEBHOOK_PORTE_URL = "https://discord.com/api/webhooks/1543373625938280520/ImOpr8m83rIFVfmXp_j_J43yTWJL00vxkuh3MtwSQf3kVUYm4MjZjfpBIMZ7dbnyyvdj";
     const WEBHOOK_SET_URL = "https://discord.com/api/webhooks/1543373625938280520/ImOpr8m83rIFVfmXp_j_J43yTWJL00vxkuh3MtwSQf3kVUYm4MjZjfpBIMZ7dbnyyvdj";
 
     const DISCORD_CLIENT_ID = "1482774609685119187";
@@ -433,7 +433,6 @@
             </div>
         `;
 
-        // Preenche automaticamente os campos de identificação com os dados da sessão do Discord e Login
         if (discordUser) {
             document.getElementById('set-discord-id').value = discordUser.id;
         }
@@ -461,7 +460,7 @@
         }
     }
 
-    // Envio do Relatório de Porte de Arma via Webhook (Com marcação automática do policial autenticado)
+    // Envio do Relatório de Porte de Arma (Otimizado com dados no content e title para busca rápida no Discord)
     async function enviarPorteArma() {
         const errorBox = document.getElementById('porte-error');
         const successBox = document.getElementById('porte-success');
@@ -496,18 +495,18 @@
         successBox.innerText = "Enviando relatório para o Discord...";
         successBox.style.display = 'block';
 
-        // Pega o ID do Discord autenticado para marcar o policial responsável na mensagem
         const discordIdPolicial = discordUserGlobal ? discordUserGlobal.id : "";
         const mencaoPolicial = discordIdPolicial ? `<@${discordIdPolicial}>` : policial;
 
+        // O texto inicial (content) agora contém o nome e o passaporte explicitamente para a busca do Discord indexar
         const payload = {
-            content: `🔫 **Novo Registro de Porte de Arma Emitido**\nResponsável: ${mencaoPolicial} | Solicitante: **${nome}** (Passaporte: **${passaporte}**)`,
+            content: `🔫 **Porte de Arma Emitido** | Solicitante: **${nome}** | Passaporte/ID: **${passaporte}** | Placas: **${placas}** | Responsável: ${mencaoPolicial}`,
             embeds: [{
-                title: `Porte de Arma — Solicitante: ${nome}`,
+                title: `Porte de Arma: ${nome} (ID: ${passaporte})`,
                 color: 16766720,
-                description: `Registro indexado para busca rápida por Nome ou Passaporte.`,
+                description: `Registro indexado para busca rápida por nome, passaporte ou placa.`,
                 fields: [
-                    { name: "Solicitante", value: nome, inline: true },
+                    { name: "Nome do Solicitante", value: nome, inline: true },
                     { name: "Passaporte (ID)", value: passaporte, inline: true },
                     { name: "Placas de Veículos", value: placas, inline: false },
                     { name: "Policial Responsável", value: `${policial} (${mencaoPolicial})`, inline: true },
@@ -542,7 +541,7 @@
         }
     }
 
-    // Envio do Relatório de Pedir Set via Webhook
+    // Envio do Relatório de Pedir Set (Otimizado com dados no content e title para busca rápida no Discord)
     async function enviarPedirSet() {
         const errorBox = document.getElementById('set-error');
         const successBox = document.getElementById('set-success');
@@ -573,11 +572,13 @@
 
         const mencaoDiscord = discordId.startsWith('<@') ? discordId : `<@${discordId}>`;
 
+        // O texto inicial (content) também indexa o nome e passaporte para busca ágil no Discord
         const payload = {
-            content: `📋 **Nova Solicitação de Set Registrada**\nMencionado: ${mencaoDiscord}`,
+            content: `📋 **Solicitação de Set** | Policial: **${nome}** | Passaporte/ID: **${passaporte}** | Patente: **${patente}** | Mencionado: ${mencaoDiscord}`,
             embeds: [{
-                title: `Relatório de Recrutamento — ${nome}`,
+                title: `Recrutamento: ${nome} (ID: ${passaporte})`,
                 color: 38663,
+                description: `Solicitação indexada para busca rápida por nome ou passaporte.`,
                 fields: [
                     { name: "Policial", value: nome, inline: true },
                     { name: "Passaporte (ID)", value: passaporte, inline: true },
